@@ -1,6 +1,6 @@
 # posts/models.py
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 
 class Post(models.Model):
     POST_TYPE_CHOICES = [
@@ -21,7 +21,7 @@ class Post(models.Model):
     content = models.TextField()
     post_type = models.CharField(max_length=20, choices=POST_TYPE_CHOICES)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, blank=True, null=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     views = models.PositiveIntegerField(default=0)
 

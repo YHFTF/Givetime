@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GiveTime - 재능 기부 플랫폼</title>
     <link rel="stylesheet" href="{% static 'main/main.css' %}" />
-
+    <script src="{% static 'main/layout.js' %}" defer></script>
+    <script src="{% static 'main/main.js' %}"></script>
   </head>
   <body>
     <div id="header">{% include 'main/header.html' %}</div>
@@ -95,97 +96,6 @@
         {% endfor %}
       </div>
     </section>
-
-    <script src="{% static 'main/main.js' %}"></script>
-    <div id="loginModal" class="modal-overlay" style="display: none">
-      <div class="login-modal">
-        <div class="welcome-header">
-          <img src="images/givetime.png" alt="GiveTime" class="logo-img" />
-          <div class="welcome-text">
-            <div class="brand-name">GIVE TIME 에 오신 것을</div>
-            <span class="highlight">환영합니다!</span>
-          </div>
-        </div>
-
-        <button class="google-btn">
-          <img src="images/google.png" class="google-icon" alt="Google" />
-          구글계정으로 로그인하기
-        </button>
-
-        <div class="divider">OR</div>
-        <!-- ✅ 이메일 입력 -->
-        <div class="input-box">
-          <img src="images/email.png" class="input-icon" />
-          <input type="email" placeholder="example@gmail.com" />
-        </div>
-
-        <!-- ✅ 비밀번호 입력 + 눈 아이콘 -->
-        <div class="input-box">
-          <img src="images/key.png" class="input-icon" />
-          <input type="password" id="password" placeholder="비밀번호 입력" />
-          <button class="toggle-password" onclick="togglePassword()">👁️</button>
-        </div>
-
-        <!-- ✅ 옵션 -->
-        <div class="options-row">
-          <label><input type="checkbox" /> 사용자 이름 기억</label>
-          <a href="#">비밀번호를 잊어버리셨나요?</a>
-        </div>
-
-        <!-- ✅ 로그인 버튼 -->
-        <button class="login-btn">로그인</button>
-        <p class="signup-text">계정이 없으신가요? <a href="#">회원가입</a></p>
-
-        <!-- 닫기 버튼 -->
-        <button onclick="closeLoginModal()" class="close-btn">X</button>
-      </div>
-    </div>
-
-    <div id="signupModal" class="modal-overlay" style="display: none">
-      <div class="signup-modal">
-        <button onclick="closeSignupModal()" class="close-btn">X</button>
-        <div class="welcome-header">
-          <img src="images/givetime.png" class="logo-img" alt="GiveTime" />
-          <div class="welcome-text">
-            <div class="brand-name">GIVE TIME 에 오신 것을</div>
-            <div class="highlight">환영합니다!</div>
-          </div>
-        </div>
-
-        <div class="input-box">
-          <img src="images/email.png" class="input-icon" />
-          <input type="email" placeholder="example@gmail.com" />
-        </div>
-
-        <div class="input-box">
-          <img src="images/key.png" class="input-icon" />
-          <input type="password" id="password" placeholder="비밀번호" />
-          <button class="toggle-password" onclick="togglePassword()">👁️</button>
-        </div>
-
-        <div class="input-box">
-          <img src="images/key.png" class="input-icon" />
-          <input
-            type="password"
-            id="confirmPassword"
-            placeholder="비밀번호 확인"
-          />
-          <button class="toggle-password" onclick="toggleConfirmPassword()">
-            👁️
-          </button>
-        </div>
-
-        <div class="input-box">
-          <img src="images/location.png" class="input-icon" />
-          <input
-            type="text"
-            placeholder="충청북도 청주시 서원구 충대로 1 S4-103호"
-          />
-        </div>  
-
-        <button class="signup-btn">회원가입</button>
-      </div>
-    </div>
     {% include 'main/footer.html' %}
   </body>
 </html>

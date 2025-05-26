@@ -49,7 +49,7 @@ def announcement_list(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'posts/story_list.html', {
+    return render(request, 'posts/announcement_list.html', {
         'page_obj': page_obj,
     })
 

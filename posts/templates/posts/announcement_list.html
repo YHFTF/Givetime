@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>공지사항</title>
+
+    <link rel="stylesheet" href="{% static 'posts/board.css' %}" />
+  </head>
+  <body>
+    <div id="header">{% include 'main/header.html' %}</div>
+
+    <div class="container">
+      <div class="main">
+        <h1>공지사항</h1>
+        <div class="search-bar">
+          <input type="text" placeholder="검색어를 입력하세요..." />
+          <button>검색</button>
+        </div>
+
+        {% for post in postlist %}
+        <div class="card">
+          <a href="{% url 'announcement_detail' post.id %}">
+            <div class="card-title">{{ post.title }}</div>
+          </a>
+          <div class="card-meta">
+            <div class="card-sub">작성자: {{ post.author.username }}</div>
+            <span class="date">{{ post.created_at|date:"Y-m-d" }}</span>
+          </div>
+        </div>
+        {% empty %}
+        <p>등록된 공지사항이 없습니다.</p>
+        {% endfor %}
+
+        {% if user.is_superuser %}
+        <a href="/posts/announcement/create/">[+] 글 작성</a>
+        {% endif %}
+
+        <div class="pagination">
+          <span class="active">1</span>
+          <a href="#">2</a>
+          <a href="#">3</a>
+          <a href="#">4</a>
+          <a href="#">5</a>
+          <a href="#">...</a>
+        </div>
+      </div>
+
+      <aside class="sidebar">
+        <div class="sidebar-title">📢 최근 공지</div>
+        <!-- 최근 공지 목록이 필요하면 여기에 작성 -->
+      </aside>
+    </div>
+
+    <div id="footer">{% include 'main/footer.html' %}</div>
+  </body>
+</html>

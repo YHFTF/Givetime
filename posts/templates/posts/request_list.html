@@ -19,7 +19,7 @@
           <button>검색</button>
         </div>
 
-        {% for post in postlist %}
+        {% for post in page_obj %}
         <div class="card">
           <a href="{% url 'request_detail' post.id %}">
             <div class="card-title">{{ post.title }}</div>
@@ -36,12 +36,21 @@
         <a href="/posts/request/create/">[+] 글 작성</a>
 
         <div class="pagination">
-          <span class="active">1</span>
-          <a href="#">2</a>
-          <a href="#">3</a>
-          <a href="#">4</a>
-          <a href="#">5</a>
-          <a href="#">...</a>
+          {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}">이전</a>
+          {% endif %} 
+          
+          {% for num in page_obj.paginator.page_range %} 
+            {% if page_obj.number == num %}
+              <span class="active">{{ num }}</span>
+            {% else %}
+              <a href="?page={{ num }}">{{ num }}</a>
+            {% endif %} 
+          {% endfor %} 
+          
+          {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">다음</a>
+          {% endif %}
         </div>
       </div>
 

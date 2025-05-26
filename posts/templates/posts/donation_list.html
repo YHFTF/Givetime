@@ -19,7 +19,7 @@
           <button>검색</button>
         </div>
 
-        {% for post in postlist %}
+        {% for post in page_obj %}
         <div class="card">
           <a href="{% url 'donation_detail' post.id %}">
             <div class="card-title">{{ post.title }}</div>
@@ -27,7 +27,7 @@
           <div class="card-meta">
             <div class="card-sub">작성자: {{ post.author.username }}</div>
             <span class="date">{{ post.created_at|date:"Y-m-d" }}</span>
-            <p>조회수: {{ post.views }}</p>
+            <span>조회수: {{ post.views }}</span>
           </div>
         </div>
         {% empty %}
@@ -38,12 +38,21 @@
         <!-- 페이지네이션, 인기글 기능 추가 필요 -->
 
         <div class="pagination">
-          <span class="active">1</span>
-          <a href="#">2</a>
-          <a href="#">3</a>
-          <a href="#">4</a>
-          <a href="#">5</a>
-          <a href="#">...</a>
+          {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}">이전</a>
+          {% endif %} 
+          
+          {% for num in page_obj.paginator.page_range %} 
+            {% if page_obj.number == num %}
+              <span class="active">{{ num }}</span>
+            {% else %}
+              <a href="?page={{ num }}">{{ num }}</a>
+            {% endif %} 
+          {% endfor %} 
+          
+          {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">다음</a>
+          {% endif %}
         </div>
       </div>
 

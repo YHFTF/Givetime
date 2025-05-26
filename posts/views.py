@@ -1,35 +1,57 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from django.shortcuts import render
+
 from .models import Post
 
 # 게시판 목록
 def donation_list(request):
     postlist = Post.objects.filter(post_type='donation').order_by('-created_at')
+    paginator = Paginator(postlist, 10)  # 페이지당 게시글 수수
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     popular_posts = Post.objects.filter(post_type='donation').order_by('-views')[:5]
+
     return render(request, 'posts/donation_list.html', {
-        'postlist': postlist,
+        'page_obj': page_obj,
         'popular_posts': popular_posts
     })
 
 def request_list(request):
     postlist = Post.objects.filter(post_type='request').order_by('-created_at')
+    paginator = Paginator(postlist, 10)  # 페이지당 게시글 수수
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     popular_posts = Post.objects.filter(post_type='request').order_by('-views')[:5]
     return render(request, 'posts/request_list.html', {
-        'postlist': postlist,
+        'page_obj': page_obj,
         'popular_posts': popular_posts
     })
 
 
 def story_list(request):
     postlist = Post.objects.filter(post_type='story').order_by('-created_at')
+    paginator = Paginator(postlist, 10)  # 페이지당 게시글 수수
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     popular_posts = Post.objects.filter(post_type='story').order_by('-views')[:5]
     return render(request, 'posts/story_list.html', {
-        'postlist': postlist,
+        'page_obj': page_obj,
         'popular_posts': popular_posts
     })
 def announcement_list(request):
     postlist = Post.objects.filter(post_type='announcement').order_by('-created_at')
-    return render(request, 'posts/announcement_list.html', {'postlist': postlist})
+    paginator = Paginator(postlist, 10)  # 페이지당 게시글 수수
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'posts/story_list.html', {
+        'page_obj': page_obj,
+    })
 
 # 게시글 상세 보기
 def donation_detail(request, post_id):

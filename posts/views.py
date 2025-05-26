@@ -64,7 +64,7 @@ def donation_detail(request, post_id):
         post.save()
         request.session[session_key] = True  # 본 글이라고 표시
 
-    return render(request, 'posts/donation_detail.html')
+    return render(request, 'posts/donation_detail.html', {'post': post})
 
 
 def request_detail(request, post_id):

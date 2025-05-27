@@ -10,12 +10,12 @@
         background-color: white;
         border-bottom: 1px solid #ddd;
       }
-
+      
       .nav-left {
         display: flex;
         flex: 1;
       }
-
+      
       .nav-center {
         position: absolute;
         left: 50%;
@@ -23,13 +23,13 @@
         display: flex;
         justify-content: center;
       }
-
+      
       .nav-right {
         display: flex;
         justify-content: flex-end;
         flex: 1;
       }
-
+      
       nav a {
         margin: 0 10px;
         text-decoration: none;
@@ -42,7 +42,6 @@
         font-size: 0.9em;
         color: black;
         background-color: transparent; /* 배경색 제거 */
-
         margin-top: 40px;
       }
       .modal-overlay {
@@ -146,7 +145,6 @@
         font-weight: bold;
         color: #d32f2f;
       }
-
       /* 구글 버튼 */
       .google-btn {
         display: flex;
@@ -163,7 +161,6 @@
         width: 18px;
         height: 18px;
       }
-
       /* 입력창 구조 */
       .input-box {
         display: flex;
@@ -192,7 +189,6 @@
         position: absolute;
         right: 10px;
       }
-
       /* 옵션 */
       .options-row {
         display: flex;
@@ -202,6 +198,7 @@
         margin-bottom: 15px;
       }
 
+      
       /* 파란 로그인 버튼 */
       .login-btn {
         background-color: #3f51b5; /* 파란색 */
@@ -223,6 +220,7 @@
         position: relative;
       }
 
+      
       .input-box {
         display: flex;
         align-items: center;
@@ -233,6 +231,7 @@
         position: relative;
       }
 
+      
       .input-box input {
         border: none;
         background: transparent;
@@ -241,11 +240,13 @@
         font-size: 1em;
       }
 
+      
       .input-icon {
         width: 24px;
         height: 24px;
       }
 
+      
       .toggle-password {
         position: absolute;
         right: 10px;
@@ -254,6 +255,7 @@
         cursor: pointer;
       }
 
+      
       .signup-btn {
         background-color: #5c6bc0;
         color: white;
@@ -273,13 +275,8 @@
         display: block;
       }
     </style>
-    <div
-      class="logo"
-      style="font-family: 'Georgia', serif; font-weight: bold; font-size: 1.5em"
-    >
-      <a href="{% url 'main' %}" style="text-decoration: none; color: inherit"
-        >Give Time</a
-      >
+    <div class="logo" style="font-family: 'Georgia', serif; font-weight: bold; font-size: 1.5em">
+      <a href="{% url 'main' %}" style="text-decoration: none; color: inherit">Give Time</a>
     </div>
   </div>
   <div class="nav-center">
@@ -304,6 +301,10 @@
       <a href="{% url 'mypage:my_page' %}"
         ><span style="font-size: 1.2em">⭐</span> 마이페이지</a
       >
+      <a href="#" onclick="openLoginModal()"><span style="font-size: 1.2em">👜</span> 로그인</a>
+      <a href="#" onclick="openSignupModal()"><span style="font-size: 1.2em">⭐</span> 회원가입</a>
+      <!-- 나중에 링크 수정 필요함 -->
+      <a href="{% url 'mypage:my_page' %}"><span style="font-size: 1.2em">⭐</span> 마이페이지</a>
       <!-- 일단은 연결만 해둠. -->
     </nav>
   </div>

@@ -145,3 +145,4 @@ function toggleConfirmPassword() {
   const pwd = document.getElementById("confirmPassword");
   pwd.type = pwd.type === "password" ? "text" : "password";
 }
+

@@ -8,7 +8,7 @@
   <body>
     <h2>{{ post.title }}</h2>
 
-    <p><strong>작성자:</strong> {{ post.author.username }}</p>
+    <p><strong>작성자:</strong> {{ post.author.nickname }}</p>
     <p><strong>작성일:</strong> {{ post.created_at|date:"Y-m-d H:i" }}</p>
 
     {% if post.category %}

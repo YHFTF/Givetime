@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import render
+from django.contrib import messages
 
 from .models import Post
 
@@ -12,7 +13,11 @@ def donation_list(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    popular_posts = Post.objects.filter(post_type='donation').order_by('-views')[:5]
+    popular_posts = (
+        Post.objects
+            .filter(post_type='donation', views__gt=0)
+            .order_by('-views')[:5]
+    )
 
     return render(request, 'posts/donation_list.html', {
         'page_obj': page_obj,
@@ -25,7 +30,12 @@ def request_list(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    popular_posts = Post.objects.filter(post_type='request').order_by('-views')[:5]
+    popular_posts = (
+        Post.objects
+            .filter(post_type='donation', views__gt=0)
+            .order_by('-views')[:5]
+    )
+
     return render(request, 'posts/request_list.html', {
         'page_obj': page_obj,
         'popular_posts': popular_posts
@@ -38,7 +48,12 @@ def story_list(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    popular_posts = Post.objects.filter(post_type='story').order_by('-views')[:5]
+    popular_posts = (
+        Post.objects
+            .filter(post_type='donation', views__gt=0)
+            .order_by('-views')[:5]
+    )
+    
     return render(request, 'posts/story_list.html', {
         'page_obj': page_obj,
         'popular_posts': popular_posts
@@ -101,20 +116,25 @@ def announcement_detail(request, post_id):
     return render(request, 'posts/announcement_detail.html', {'post': post})
 
 # 게시글 작성
-@login_required
 def create_post(request, post_type):
     VALID_POST_TYPES = ['donation', 'request', 'story', 'announcement']
     if post_type not in VALID_POST_TYPES:
         return render(request, '404.html')
 
-    # 공지사항은 관리자만 작성 가능
+    # 1) 로그인 체크
+    if not request.user.is_authenticated:
+        messages.warning(request, "로그인이 필요한 기능입니다.")
+        # 이전 페이지로 돌아가되, 없으면 메인으로
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+
+    # 2) 공지사항 권한 체크
     if post_type == 'announcement' and not request.user.is_superuser:
         return render(request, '403.html')
 
     if request.method == 'POST':
-        title = request.POST.get('title')
-        content = request.POST.get('content')
-        category = request.POST.get('category') if post_type in ['donation', 'request'] else None
+        title    = request.POST.get('title')
+        content  = request.POST.get('content')
+        category = request.POST.get('category') if post_type in ['donation','request'] else None
 
         Post.objects.create(
             title=title,
@@ -123,7 +143,6 @@ def create_post(request, post_type):
             category=category,
             author=request.user
         )
-
         return redirect(f'/posts/{post_type}/')
 
     return render(request, 'posts/post_form.html', {'post_type': post_type})

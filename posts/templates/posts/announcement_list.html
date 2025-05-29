@@ -27,7 +27,7 @@
             <div class="card-title">{{ post.title }}</div>
           </a>
           <div class="card-meta">
-            <div class="card-sub">작성자: {{ post.author.username }}</div>
+            <div class="card-sub">작성자: {{ post.author.nickname }}</div>
             <span class="date">{{ post.created_at|date:"Y-m-d" }}</span>
             <span>조회수: {{ post.views }}</span>
           </div>
@@ -69,7 +69,7 @@
           </div>
           <div class="sidebar-card-meta">
             <div class="author-info">
-              <span class="author">{{ post.author.username }}</span>
+              <span class="author">{{ post.author.nickname }}</span>
             </div>
             <span class="date">{{ post.created_at|date:"Y-m-d" }}</span>
             <span>조회수: {{ post.views }}</span>

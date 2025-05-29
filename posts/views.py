@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.contrib import messages
+from django.urls import reverse
 
 from .models import Post
 
@@ -17,7 +18,7 @@ def donation_list(request):
         Post.objects
             .filter(post_type='donation', views__gt=0)
             .order_by('-views')[:5]
-    )
+    )   
 
     return render(request, 'posts/donation_list.html', {
         'page_obj': page_obj,
@@ -146,3 +147,34 @@ def create_post(request, post_type):
         return redirect(f'/posts/{post_type}/')
 
     return render(request, 'posts/post_form.html', {'post_type': post_type})
+
+@login_required
+def post_update(request, post_type, post_id):
+    VALID_POST_TYPES = ['donation', 'request', 'story', 'announcement']
+    if post_type not in VALID_POST_TYPES:
+        return render(request, '404.html')
+
+    post = get_object_or_404(Post, id=post_id, post_type=post_type)
+
+    # 권한 확인
+    if post.author != request.user:
+        return render(request, '403.html')
+
+    if post_type == 'announcement' and not request.user.is_superuser:
+        return render(request, '403.html')
+
+    if request.method == 'POST':
+        post.title = request.POST.get('title')
+        post.content = request.POST.get('content')
+
+        if post_type in ['donation', 'request']:
+            post.category = request.POST.get('category')
+
+        post.save()
+        return redirect(reverse(f'{post_type}_detail', args=[post.id]))
+
+    return render(request, 'posts/post_form.html', {
+        'post': post,
+        'mode': 'update',
+        'post_type': post_type
+    })

@@ -17,30 +17,23 @@
       {% csrf_token %}
 
       <label for="title">제목:</label><br />
-      <input type="text" id="title" name="title" required /><br /><br />
+      <input type="text" id="title" name="title" value="{{ post.title|default_if_none:'' }}" required /><br /><br />
 
       <label for="content">내용:</label><br />
-      <textarea
-        id="content"
-        name="content"
-        rows="10"
-        cols="50"
-        required
-      ></textarea
-      ><br /><br />
+      <textarea id="content" name="content" rows="10" cols="50" required>{{ post.content|default_if_none:'' }}</textarea><br /><br />
 
       {% if post_type == 'donation' or post_type == 'request' %}
       <label for="category">카테고리:</label><br />
       <select id="category" name="category" required>
         <option value="">-- 선택하세요 --</option>
-        <option value="education">교육</option>
-        <option value="it">IT/개발</option>
-        <option value="design">디자인</option>
-        <option value="etc">기타</option></select
-      ><br /><br />
+        <option value="education" {% if post.category == 'education' %}selected{% endif %}>교육</option>
+        <option value="it" {% if post.category == 'it' %}selected{% endif %}>IT/개발</option>
+        <option value="design" {% if post.category == 'design' %}selected{% endif %}>디자인</option>
+        <option value="etc" {% if post.category == 'etc' %}selected{% endif %}>기타</option>
+      </select><br /><br />
       {% endif %}
 
-      <button type="submit">등록</button>
+      <button type="submit">{% if mode == 'update' %}수정 완료{% else %}등록{% endif %}</button>
     </form>
   </body>
 </html>

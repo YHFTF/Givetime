@@ -20,6 +20,9 @@
     <p>{{ post.content|linebreaks }}</p>
 
     <br />
+    {% if user == post.author %}
+    <a href="{% url 'post_update' post.post_type post.id %}">수정</a>
+    {% endif %}
     <a href="/posts/donation/">← 목록으로 돌아가기</a>
   </body>
 </html>

@@ -178,3 +178,25 @@ def post_update(request, post_type, post_id):
         'mode': 'update',
         'post_type': post_type
     })
+
+@login_required
+def post_delete(request, post_type, post_id):
+    VALID_POST_TYPES = ['donation', 'request', 'story', 'announcement']
+    if post_type not in VALID_POST_TYPES:
+        return render(request, '404.html')
+
+    post = get_object_or_404(Post, id=post_id, post_type=post_type)
+
+    # 권한 확인
+    if post.post_type == 'announcement':
+        if not request.user.is_superuser:
+            return render(request, '403.html')
+    else:
+        if post.author != request.user:
+            return render(request, '403.html')
+
+    if request.method == 'POST':
+        post.delete()
+        return redirect(reverse(f'{post_type}_list'))
+
+    return redirect(reverse(f'{post_type}_detail', args=[post.id]))

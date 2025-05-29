@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.contrib import messages
 from django.urls import reverse
 
-from .models import Post
+from .models import Post, Comment
 
 # 게시판 목록
 def donation_list(request):
@@ -200,3 +200,26 @@ def post_delete(request, post_type, post_id):
         return redirect(reverse(f'{post_type}_list'))
 
     return redirect(reverse(f'{post_type}_detail', args=[post.id]))
+
+@login_required
+def add_comment(request, post_type, post_id):
+    post = get_object_or_404(Post, id=post_id, post_type=post_type)
+
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        if content:
+            Comment.objects.create(post=post, author=request.user, content=content)
+    
+    return redirect(reverse(f'{post_type}_detail', args=[post.id]))
+
+@login_required
+def delete_comment(request, post_type, post_id, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id, post__id=post_id, post__post_type=post_type)
+
+    if request.user != comment.author:
+        return render(request, '403.html')
+
+    if request.method == 'POST':
+        comment.delete()
+    
+    return redirect(reverse(f'{post_type}_detail', args=[post_id]))

@@ -55,7 +55,9 @@
         <p>등록된 게시글이 없습니다.</p>
         {% endfor %}
 
-        <a href="{% url 'post_create' post_type %}">[+] 글 작성</a>
+        {% if post_type != 'announcement' %}
+          <a href="{% url 'post_create' post_type %}">[+] 글 작성</a>
+        {% endif %}
 
         <div class="pagination">
           {% if page_obj.has_previous %}

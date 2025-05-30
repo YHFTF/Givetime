@@ -12,16 +12,28 @@
 
     <main class="profile-card">
         <h1>프로필 수정</h1>
-        <form method="post">
+
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <label for="about">About</label><br>
-            <textarea name="about" id="about" rows="5">{{ about }}</textarea><br><br>
+            <textarea name="about" id="about" rows="5">{{ user.about }}</textarea><br><br>
 
             <label for="skills">Skills</label><br>
-            <textarea name="skills" id="skills" rows="5">{{ skillls }}</textarea><br><br>
+            <textarea name="skills" id="skills" rows="5">{{ user.skills }}</textarea><br><br>
 
-            <label for="services">services</label><br>
-            <textarea name="services" id="services" rows="5">{{ services }}</textarea><br><br>
+            <label for="services">Services</label><br>
+            <textarea name="services" id="services" rows="5">{{ user.services }}</textarea><br><br>
+
+            <label for="profile_image">프로필 이미지</label><br>
+            {% if user.profile_image %}
+                <img src="{{ user.profile_image.url }}" alt="프로필 이미지" style="max-width: 150px;"><br>
+                <label>
+                    <input type="checkbox" name="delete_image"> 이미지 삭제
+                </label><br>
+            {% else %}
+                <p>등록된 프로필 이미지가 없습니다.</p>
+            {% endif %}
+            <input type="file" name="profile_image" id="profile_image"><br><br>
 
             <button type="submit">저장</button>
         </form>

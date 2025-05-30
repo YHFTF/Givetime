@@ -4,7 +4,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>재능 요청</title>
+    <title>
+      {% if post_type == 'donation' %} 재능 기부
+      {% elif post_type == 'request' %} 재능 요청
+      {% elif post_type == 'story' %} 따뜻한 이야기
+      {% elif post_type == 'announcement' %} 공지사항
+      {% endif %}
+    </title>
 
     <link rel="stylesheet" href="{% static 'posts/board.css' %}" />
     <script src="{% static 'main/layout.js' %}" defer></script>
@@ -14,7 +20,14 @@
 
     <div class="container">
       <div class="main">
-        <h1>재능 요청</h1>
+        <h1>
+          {% if post_type == 'donation' %} 재능 기부
+          {% elif post_type == 'request' %} 재능 요청
+          {% elif post_type == 'story' %} 따뜻한 이야기
+          {% elif post_type == 'announcement' %} 공지사항
+          {% endif %}
+        </h1>
+
         <div class="search-bar">
           <input type="text" placeholder="검색어를 입력하세요..." />
           <button>검색</button>
@@ -22,23 +35,15 @@
 
         {% for post in page_obj %}
         <div class="card">
-          <a href="{% url 'donation_detail' post.id %}">
+          <a href="{% url 'post_detail' post_type post.id %}">
             <div class="card-title">{{ post.title }}</div>
           </a>
           <div class="card-meta">
             <div class="author-info">
               {% if post.author.profile_image %}
-              <img
-                src="{{ post.author.profile_image.url }}"
-                alt="작성자 프로필"
-                class="profile-img-small"
-              />
+                <img src="{{ post.author.profile_image.url }}" alt="작성자 프로필" class="profile-img-small" />
               {% else %}
-              <img
-                src="{% static 'images/default_profile.png' %}"
-                alt="기본 프로필"
-                class="profile-img-small"
-              />
+                <img src="{% static 'images/default_profile.png' %}" alt="기본 프로필" class="profile-img-small" />
               {% endif %}
               <span class="author">{{ post.author.nickname }}</span>
             </div>
@@ -46,26 +51,25 @@
             <span>조회수: {{ post.views }}</span>
           </div>
         </div>
-
         {% empty %}
         <p>등록된 게시글이 없습니다.</p>
         {% endfor %}
 
-        <a href="/posts/request/create/">[+] 글 작성</a>
+        <a href="{% url 'post_create' post_type %}">[+] 글 작성</a>
 
         <div class="pagination">
           {% if page_obj.has_previous %}
             <a href="?page={{ page_obj.previous_page_number }}">이전</a>
-          {% endif %} 
-          
-          {% for num in page_obj.paginator.page_range %} 
+          {% endif %}
+
+          {% for num in page_obj.paginator.page_range %}
             {% if page_obj.number == num %}
               <span class="active">{{ num }}</span>
             {% else %}
               <a href="?page={{ num }}">{{ num }}</a>
-            {% endif %} 
-          {% endfor %} 
-          
+            {% endif %}
+          {% endfor %}
+
           {% if page_obj.has_next %}
             <a href="?page={{ page_obj.next_page_number }}">다음</a>
           {% endif %}
@@ -78,22 +82,14 @@
         {% for post in popular_posts %}
         <div class="sidebar-card">
           <div class="sidebar-card-title">
-            <a href="{% url 'donation_detail' post.id %}">{{ post.title }}</a>
+            <a href="{% url 'post_detail' post_type post.id %}">{{ post.title }}</a>
           </div>
           <div class="sidebar-card-meta">
             <div class="author-info">
               {% if post.author.profile_image %}
-              <img
-                src="{{ post.author.profile_image.url }}"
-                alt="작성자 프로필"
-                class="profile-img-small"
-              />
+                <img src="{{ post.author.profile_image.url }}" alt="작성자 프로필" class="profile-img-small" />
               {% else %}
-              <img
-                src="{% static 'images/default_profile.png' %}"
-                alt="기본 프로필"
-                class="profile-img-small"
-              />
+                <img src="{% static 'images/default_profile.png' %}" alt="기본 프로필" class="profile-img-small" />
               {% endif %}
               <span class="author">{{ post.author.nickname }}</span>
             </div>
@@ -101,7 +97,6 @@
             <span>조회수: {{ post.views }}</span>
           </div>
         </div>
-
         {% empty %}
         <p>인기글이 없습니다.</p>
         {% endfor %}

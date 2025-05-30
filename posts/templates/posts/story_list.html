@@ -22,15 +22,31 @@
 
         {% for post in page_obj %}
         <div class="card">
-          <a href="{% url 'story_detail' post.id %}">
+          <a href="{% url 'donation_detail' post.id %}">
             <div class="card-title">{{ post.title }}</div>
           </a>
           <div class="card-meta">
-            <div class="card-sub">작성자: {{ post.author.nickname }}</div>
+            <div class="author-info">
+              {% if post.author.profile_image %}
+              <img
+                src="{{ post.author.profile_image.url }}"
+                alt="작성자 프로필"
+                class="profile-img-small"
+              />
+              {% else %}
+              <img
+                src="{% static 'images/default_profile.png' %}"
+                alt="기본 프로필"
+                class="profile-img-small"
+              />
+              {% endif %}
+              <span class="author">{{ post.author.nickname }}</span>
+            </div>
             <span class="date">{{ post.created_at|date:"Y-m-d" }}</span>
             <span>조회수: {{ post.views }}</span>
           </div>
         </div>
+
         {% empty %}
         <p>등록된 게시글이 없습니다.</p>
         {% endfor %}
@@ -39,7 +55,7 @@
 
         <div class="pagination">
           {% if page_obj.has_previous %}
-          <a href="?page={{ page_obj.previous_page_number }}">이전</a>
+            <a href="?page={{ page_obj.previous_page_number }}">이전</a>
           {% endif %} 
           
           {% for num in page_obj.paginator.page_range %} 
@@ -61,15 +77,30 @@
         {% for post in popular_posts %}
         <div class="sidebar-card">
           <div class="sidebar-card-title">
-            <a href="{% url 'story_detail' post.id %}">{{ post.title }}</a>
+            <a href="{% url 'donation_detail' post.id %}">{{ post.title }}</a>
           </div>
           <div class="sidebar-card-meta">
             <div class="author-info">
+              {% if post.author.profile_image %}
+              <img
+                src="{{ post.author.profile_image.url }}"
+                alt="작성자 프로필"
+                class="profile-img-small"
+              />
+              {% else %}
+              <img
+                src="{% static 'images/default_profile.png' %}"
+                alt="기본 프로필"
+                class="profile-img-small"
+              />
+              {% endif %}
               <span class="author">{{ post.author.nickname }}</span>
             </div>
             <span class="date">{{ post.created_at|date:"Y-m-d" }}</span>
+            <span>조회수: {{ post.views }}</span>
           </div>
         </div>
+
         {% empty %}
         <p>인기글이 없습니다.</p>
         {% endfor %}

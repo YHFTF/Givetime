@@ -24,6 +24,7 @@ class Post(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     views = models.PositiveIntegerField(default=0)
+    image = models.ImageField(upload_to='post_images/', null=True, blank=True)
 
     def __str__(self):
         return f"{self.title}"

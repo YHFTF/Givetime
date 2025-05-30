@@ -13,6 +13,13 @@
 
     {% if post.category %}
     <p><strong>카테고리:</strong> {{ post.get_category_display }}</p>
+    {% endif %} 
+    {% if post.image %}
+    <img
+      src="{{ post.image.url }}"
+      alt="게시글 이미지"
+      style="max-width: 500px; height: auto"
+    />
     {% endif %}
 
     <hr />
@@ -54,7 +61,7 @@
     <ul>
       {% for comment in post.comments.all %}
       <li>
-        <strong>{{ comment.author.nickname }}</strong> 
+        <strong>{{ comment.author.nickname }}</strong>
         ({{ comment.created_at|date:"Y-m-d H:i" }}): {{ comment.content }} 
         {% if user == comment.author %}
         <form

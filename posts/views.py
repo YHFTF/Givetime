@@ -142,7 +142,8 @@ def create_post(request, post_type):
             content=content,
             post_type=post_type,
             category=category,
-            author=request.user
+            author=request.user,
+            image = request.FILES.get('image'),
         )
         return redirect(f'/posts/{post_type}/')
 
@@ -169,6 +170,13 @@ def post_update(request, post_type, post_id):
 
         if post_type in ['donation', 'request']:
             post.category = request.POST.get('category')
+
+        if request.POST.get('delete_image'):
+            post.image.delete(save=False)
+            post.image = None
+
+        if request.FILES.get('image'):
+            post.image = request.FILES.get('image')    
 
         post.save()
         return redirect(reverse(f'{post_type}_detail', args=[post.id]))

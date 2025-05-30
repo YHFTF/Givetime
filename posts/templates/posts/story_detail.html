@@ -10,6 +10,13 @@
 
     <p><strong>작성자:</strong> {{ post.author.nickname }}</p>
     <p><strong>작성일:</strong> {{ post.created_at|date:"Y-m-d H:i" }}</p>
+    {% if post.image %}
+    <img
+      src="{{ post.image.url }}"
+      alt="게시글 이미지"
+      style="max-width: 500px; height: auto"
+    />
+    {% endif %}
 
     <hr />
 
@@ -51,7 +58,7 @@
     <ul>
       {% for comment in post.comments.all %}
       <li>
-        <strong>{{ comment.author.nickname }}</strong> 
+        <strong>{{ comment.author.nickname }}</strong>
         ({{ comment.created_at|date:"Y-m-d H:i" }}): {{ comment.content }} 
         {% if user == comment.author %}
         <form

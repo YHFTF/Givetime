@@ -13,7 +13,14 @@ def post_list(request, post_type):
     if post_type not in VALID_POST_TYPES:
         return render(request, '404.html')
 
-    posts = Post.objects.filter(post_type=post_type).order_by('-created_at')
+    query = request.GET.get('q', '')  # 검색어 파라미터 (없으면 빈 문자열)
+    posts = Post.objects.filter(post_type=post_type)
+
+    if query:
+        posts = posts.filter(title__icontains=query)  # 제목에 검색어 포함된 게시글만 필터
+
+    posts = posts.order_by('-created_at')
+
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -24,6 +31,7 @@ def post_list(request, post_type):
         'page_obj': page_obj,
         'popular_posts': popular_posts,
         'post_type': post_type,
+        'query': query,  # 템플릿에서 입력값 유지
     })
 
 # 게시글 상세 (공통)

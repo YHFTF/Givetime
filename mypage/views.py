@@ -18,7 +18,6 @@ def my_page(request):
 
     return render(request, 'mypage/mypage.html', context)
 
-
 @login_required
 def edit_profile(request):
     user = request.user

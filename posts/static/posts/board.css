@@ -1,4 +1,3 @@
-/* 기본 스타일 */
 body {
   margin: 0;
   font-family: "Arial", sans-serif;
@@ -148,6 +147,15 @@ h1 {
   margin-top: 10px;
 }
 
+.author {
+  font-weight: bold;
+}
+
+.date {
+  color: gray;
+  font-size: 13px;
+}
+
 .sidebar-card:last-child {
   border-bottom: none;
 }
@@ -195,4 +203,101 @@ footer {
   display: flex;
   align-items: center;
   gap: 6px;               /* ✅ 이미지-닉네임 사이 간격 */
+}
+
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.date {
+  font-size: 14px;
+  color: gray;
+}
+
+.create-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 20px 0;
+  background-color: black;
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.create-btn:hover {
+  background-color: black;
+}
+
+.page-bg {
+  background-color: #f5f5f5; /* ✅ 배경을 연한 회색으로! */
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 5px;
+  box-sizing: border-box;
+}
+
+/* 글 작성 폼 전체 wrapper */
+.form-wrapper {
+  max-width: 800px;
+  width: 100%;
+  background-color: #fafafa;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+}
+
+/* 제목 */
+form h2 {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+/* 레이블 공통 */
+form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #444;
+}
+
+/* 인풋, 텍스트에어리어 공통 스타일 */
+form input[type="text"],
+form textarea,
+form select {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+  resize: vertical;
+}
+
+/* 등록 버튼 */
+form button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background-color: black;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+form button[type="submit"]:hover {
+  background-color: #333;
 }

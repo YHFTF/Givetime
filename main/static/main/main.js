@@ -42,7 +42,6 @@ document.addEventListener("DOMContentLoaded", function () {
     signupForm.addEventListener("submit", function (e) {
       e.preventDefault();
 
-      // 기존 에러 메시지 초기화
       const errorMessages = signupForm.querySelectorAll(".error-message");
       errorMessages.forEach((span) => (span.textContent = ""));
 

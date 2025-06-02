@@ -1,16 +1,37 @@
 <footer>
-    <style>
-        footer {
-            text-align: center;
-            padding: 30px;
-            font-size: 0.9em;
-            color: black;
-            background-color: transparent;
-            /* 배경색 제거 */
-
-            margin-top: 40px;
-        }
-    </style>
-    © 2025 AI프로젝트 박성범 박영현 윤준식<br />
-    찾아오시는 길: 충북대학교 S4-103호
+{% load static %}
+<script src="{% static 'main/popup.js' %}"></script>
+  <style>
+    footer {
+      text-align: center;
+      padding: 30px;
+      font-size: 0.9em;
+      color: black;
+      background-color: transparent;
+      /* 배경색 제거 */
+    
+      margin-top: 40px;
+    }
+    .popup-message {
+      position: fixed;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #323232;
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 8px;
+      font-size: 1rem;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    .popup-message.show {
+      display: block;
+      opacity: 1;
+    }
+  </style>© 2025 AI프로젝트 박성범 박영현 윤준식<br />
+  찾아오시는 길: 충북대학교 S4-103호
+  <div id="popupMessage" class="popup-message" style="display: none;"></div>
 </footer>

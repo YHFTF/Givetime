@@ -6,8 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GiveTime - 재능 기부 플랫폼</title>
     <link rel="stylesheet" href="{% static 'main/main.css' %}" />
+    <script src="{% static 'main/sakura.js' %}"></script>
   </head>
   <body>
+    <canvas id="sakuraCanvas"></canvas>
     <div id="header">{% include 'main/header.html' %}</div>
 
     <div class="main-banner">
@@ -95,5 +97,6 @@
       </div>
     </section>
     {% include 'main/footer.html' %}
+    <div id="popupMessage" class="popup-message" style="display: none;"></div> <!-- 팝업 메시지 -->
   </body>
 </html>

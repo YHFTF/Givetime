@@ -4,8 +4,8 @@ from django.conf import settings
 
 class Post(models.Model):
     POST_TYPE_CHOICES = [
-        ('donation', '재능기부'),
-        ('request', '재능요청'),
+        ('donation', '재능 기부'),
+        ('request', '재능 요청'),
         ('story', '따뜻한 이야기'),
         ('announcement', '공지사항'),
     ]
@@ -24,6 +24,16 @@ class Post(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     views = models.PositiveIntegerField(default=0)
+    image = models.ImageField(upload_to='post_images/', null=True, blank=True)
 
     def __str__(self):
-        return f"{self.title}"
+        return f"[{self.get_post_type_display()}] {self.title}"
+
+class Comment(models.Model):
+    post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Comment by {self.author.nickname} on {self.post.title}"

@@ -1,8 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login, logout, get_user_model
-from django.contrib import messages
 from django.http import JsonResponse
-from .forms import SignUpForm, LoginForm
 
 User = get_user_model()
 
@@ -10,35 +8,56 @@ def signup_view(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         nickname = request.POST.get('nickname')
-        password = request.POST.get('password')
-        confirm_password = request.POST.get('confirm_password')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
         location = request.POST.get('location')
 
-        if password != confirm_password:
+        if not all([email, nickname, password1, password2, location]):
+            return JsonResponse({'success': False, 'message': '모든 필드를 입력해주세요.'})
+
+        if password1 != password2:
             return JsonResponse({'success': False, 'message': '비밀번호가 일치하지 않습니다.'})
 
         if User.objects.filter(email=email).exists():
             return JsonResponse({'success': False, 'message': '이미 존재하는 이메일입니다.'})
 
-        user = User.objects.create_user(email=email, password=password, nickname=nickname, location=location)
-        login(request, user)
-        return JsonResponse({'success': True})
+        try:
+            user = User.objects.create_user(
+                email=email,
+                password=password1,
+                nickname=nickname,
+                location=location
+            )
+            # 자동 로그인 제거 - 회원가입만 완료
+            return JsonResponse({'success': True, 'message': '회원가입이 완료되었습니다!'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': '회원가입 중 오류가 발생했습니다.'})
 
     return JsonResponse({'success': False, 'message': '잘못된 요청입니다.'})
 
 def login_view(request):
     if request.method == 'POST':
-        form = LoginForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            messages.success(request, '로그인 성공!')
-            return redirect('main')
-        else:
-            messages.error(request, '로그인 실패!')
-    return redirect('main')
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            email = request.POST.get('username')
+            password = request.POST.get('password')
+
+            if not email or not password:
+                return JsonResponse({'success': False, 'message': '이메일과 비밀번호를 모두 입력해주세요.'})
+
+            user = authenticate(request, username=email, password=password)
+
+            if user is not None:
+                login(request, user)
+                return JsonResponse({'success': True, 'message': '로그인에 성공했습니다!'})
+            else:
+                return JsonResponse({'success': False, 'message': '이메일 또는 비밀번호가 올바르지 않습니다.'})
+
+    return JsonResponse({'success': False, 'message': '잘못된 요청입니다.'})
 
 def logout_view(request):
     logout(request)
-    messages.success(request, '로그아웃 되었습니다.')
-    return redirect('main')
+    return JsonResponse({
+        'success': True,
+        'message': '👋 로그아웃 되었습니다!',
+        'redirect_url': '/'
+    })

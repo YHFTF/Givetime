@@ -37,6 +37,7 @@ nav a {
 h1 {
   font-size: 32px;
   margin-bottom: 20px;
+  text-align: center;
 }
 
 .search-bar {
@@ -79,6 +80,32 @@ h1 {
 .card-sub {
   color: gray;
   font-size: 14px;
+}
+
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.author-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.profile-img-small {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  vertical-align: middle;
+}
+
+.date {
+  font-size: 14px;
+  color: gray;
 }
 
 .sidebar {
@@ -161,8 +188,21 @@ footer {
   color: #666;
 }
 
-h1 {
-  text-align: center;
+/* 게시글 목록의 프로필 이미지 스타일 */
+.profile-img-small {
+  width: 24px;            /* ✅ 작은 크기 (원하는 크기로 조정) */
+  height: 24px;
+  border-radius: 50%;     /* ✅ 동그랗게 */
+  object-fit: cover;      /* ✅ 비율 유지하며 잘림 */
+  vertical-align: middle;
+  margin-right: 6px;
+  flex-shrink: 0;         /* ✅ 크기 유지 */
+}
+
+.author-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;               /* ✅ 이미지-닉네임 사이 간격 */
 }
 
 .card-meta {

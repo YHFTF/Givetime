@@ -22,6 +22,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     nickname = models.CharField(max_length=30)
     location = models.CharField(max_length=100)
+    profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
     about = models.TextField(blank=True, null=True)  # 소개글
     skills = models.TextField(blank=True, null=True)  # 기술 목록
     services = models.TextField(blank=True, null=True)  # 서비스 목록

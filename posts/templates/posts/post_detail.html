@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ post.title }}</title>
+  <link rel="stylesheet" href="{% static 'posts/board.css' %}" />
+</head>
+<body>
+
+  <h2>{{ post.title }}</h2>
+
+  <!-- 작성자 정보 -->
+  <div class="author-info">
+    {% if post.author.profile_image %}
+      <img src="{{ post.author.profile_image.url }}" alt="작성자 프로필" class="profile-img-small" />
+    {% else %}
+      <img src="{% static 'images/default_profile.png' %}" alt="기본 프로필" class="profile-img-small" />
+    {% endif %}
+    <strong>{{ post.author.nickname }}</strong>
+    <span class="date">{{ post.created_at|date:"Y-m-d H:i" }}</span>
+  </div>
+
+  {% if post.category %}
+    <p><strong>카테고리:</strong> {{ post.get_category_display }}</p>
+  {% endif %}
+
+  {% if post.image %}
+    <img src="{{ post.image.url }}" alt="게시글 이미지" style="max-width: 500px; height: auto" />
+  {% endif %}
+
+  <hr />
+
+  <p>{{ post.content|linebreaks }}</p>
+
+  <br />
+
+  {% if user == post.author %}
+    <a href="{% url 'post_update' post.post_type post.id %}">수정</a>
+    <form action="{% url 'post_delete' post.post_type post.id %}" method="post" style="display: inline">
+      {% csrf_token %}
+      <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
+    </form>
+  {% endif %}
+
+  <h3>댓글</h3>
+
+  {% if user.is_authenticated %}
+    <form action="{% url 'add_comment' post.post_type post.id %}" method="post">
+      {% csrf_token %}
+      <textarea name="content" rows="3" placeholder="댓글을 작성하세요" required></textarea>
+      <br />
+      <button type="submit">작성</button>
+    </form>
+  {% else %}
+    <p>댓글 작성은 로그인 후 가능합니다.</p>
+  {% endif %}
+
+  <ul>
+    {% for comment in post.comments.all %}
+      <li>
+        <div class="author-info">
+          {% if comment.author.profile_image %}
+            <img src="{{ comment.author.profile_image.url }}" alt="작성자 프로필" class="profile-img-small" />
+          {% else %}
+            <img src="{% static 'images/default_profile.png' %}" alt="기본 프로필" class="profile-img-small" />
+          {% endif %}
+          <strong>{{ comment.author.nickname }}</strong>
+          <span class="date">{{ comment.created_at|date:"Y-m-d H:i" }}</span>
+        </div>
+        <p>{{ comment.content }}</p>
+        {% if user == comment.author %}
+          <form action="{% url 'delete_comment' post.post_type post.id comment.id %}" method="post" style="display: inline">
+            {% csrf_token %}
+            <button type="submit" onclick="return confirm('정말 이 댓글을 삭제하시겠습니까?');">삭제</button>
+          </form>
+        {% endif %}
+      </li>
+    {% empty %}
+      <li>아직 댓글이 없습니다. 첫 댓글을 작성해보세요!</li>
+    {% endfor %}
+  </ul>
+
+  <a href="{% url 'post_list' post.post_type %}">← 목록으로 돌아가기</a>
+
+</body>
+</html>

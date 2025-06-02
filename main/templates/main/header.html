@@ -1,6 +1,9 @@
 {% load static %}
-<header>
-  <div class="nav-left">
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="csrf-token" content="{{ csrf_token }}" />
+    <meta name="logout-url" content="{% url 'account:logout' %}" />
     <style>
       header {
         display: flex;
@@ -266,184 +269,258 @@
         cursor: pointer;
       }
 
+      /* 🔥 에러 메시지와 도움말 스타일 추가 */
       .error-message {
-        font-size: 12px;
-        color: red;
-        margin-top: 5px;
+        min-height: 14px;
+        margin-top: 2px;
+      }
+
+      .help-text {
+        margin-top: 2px;
         display: block;
       }
-    </style>
-    <div
-      class="logo"
-      style="font-family: 'Georgia', serif; font-weight: bold; font-size: 1.5em"
-    >
-      <a href="{% url 'main' %}" style="text-decoration: none; color: inherit"
-        >Give Time</a
-      >
-    </div>
-  </div>
-  <div class="nav-center">
-    <nav>
-      <a href="{% url 'announcement_list' %}">공지사항</a>
-      <a href="{% url 'donation_list' %}">재능기부</a>
-      <a href="{% url 'request_list' %}">재능요청</a>
-      <a href="{% url 'story_list' %}">따뜻한 이야기</a>
-    </nav>
-  </div>
-  <div class="nav-right">
-    <nav>
-      {% if user.is_authenticated %}
-      <a href="{% url 'account:logout' %}">로그아웃</a>
-      {% else %}
-      <a href="#" onclick="openLoginModal()">
-        <span style="font-size: 1.2em; margin-right: 4px">👜</span>로그인
-      </a>
-      {% endif %}
-      <a href="#" onclick="openSignupModal()"
-        ><span style="font-size: 1.2em">⭐</span> 회원가입</a
-      >
-      <!-- 나중에 링크 수정 필요함 -->
-      <a href="{% url 'mypage:my_page' %}"
-        ><span style="font-size: 1.2em">⭐</span> 마이페이지</a
-      >
-      <!-- 일단은 연결만 해둠. -->
-    </nav>
-  </div>
-</header>
 
-<!-- 로그인 모달 -->
-<div id="loginModal" class="modal-overlay" style="display: none">
-  <div class="login-modal">
-    <form method="post" action="{% url 'account:login' %}">
-      {% csrf_token %}
-      <div class="welcome-header">
-        <img
-          src="{% static 'main/images/givetime.png' %}"
-          alt="GiveTime"
-          class="logo-img"
-        />
-        <div class="welcome-text">
-          <div class="brand-name">GIVE TIME 에 오신 것을</div>
-          <span class="highlight">환영합니다!</span>
+      .input-box {
+        position: relative;
+        margin-bottom: 15px;
+      }
+
+      /* 기존 스타일 유지하면서 추가 */
+      .login-btn:disabled,
+      .signup-btn:disabled {
+        background-color: #6c757d;
+        cursor: not-allowed;
+      }
+    </style>
+    {% if messages %}
+    <script>
+      {% for msg in messages %}
+        alert("{{ msg }}");
+      {% endfor %}
+    </script>
+    {% endif %}
+  </head>
+  <body>
+    <header>
+      <div class="nav-left">
+        <div
+          class="logo"
+          style="
+            font-family: 'Georgia', serif;
+            font-weight: bold;
+            font-size: 1.5em;
+          "
+        >
+          <a
+            href="{% url 'main' %}"
+            style="text-decoration: none; color: inherit"
+            >Give Time</a
+          >
         </div>
       </div>
-
-      <button type="button" class="google-btn">
-        <img
-          src="{% static 'main/images/google.png' %}"
-          class="google-icon"
-          alt="Google"
-        />
-        구글계정으로 로그인하기
-      </button>
-
-      <div class="divider">OR</div>
-
-      <div class="input-box">
-        <img src="{% static 'main/images/message.png' %}" class="input-icon" />
-        <input
-          type="email"
-          name="username"
-          placeholder="example@gmail.com"
-          required
-        />
+      <div class="nav-center">
+        <nav>
+          <a href="{% url 'post_list' 'announcement' %}">공지사항</a>
+          <a href="{% url 'post_list' 'donation' %}">재능기부</a>
+          <a href="{% url 'post_list' 'request' %}">재능요청</a>
+          <a href="{% url 'post_list' 'story' %}">따듯한 이야기</a>
+        </nav>
       </div>
-
-      <div class="input-box">
-        <img src="{% static 'main/images/key.png' %}" class="input-icon" />
-        <input
-          type="password"
-          name="password"
-          id="loginPassword"
-          placeholder="비밀번호 입력"
-          required
-        />
-        <button
-          type="button"
-          class="toggle-password"
-          onclick="togglePassword('loginPassword')"
-        >
-          👁️
-        </button>
+      <div class="nav-right">
+        <nav>
+          {% if user.is_authenticated %}
+          <!-- 로그인 후 -->
+          <a href="#" id="logoutBtn">⭐로그아웃</a>
+          <a href="{% url 'mypage:my_page' %}">
+            <span style="font-size: 1.2em">⭐</span> 마이페이지
+          </a>
+          {% else %}
+          <!-- 로그인 전 -->
+          <a href="#" onclick="openLoginModal()">⭐로그인</a>
+          <a href="#" onclick="openSignupModal()">
+            <span style="font-size: 1.2em">⭐</span> 회원가입
+          </a>
+          {% endif %}
+        </nav>
       </div>
+    </header>
 
-      <div class="options-row">
-        <label><input type="checkbox" /> 사용자 이름 기억</label>
-        <a href="#">비밀번호를 잊어버리셨나요?</a>
+    <!-- 로그인 모달 -->
+    <div id="loginModal" class="modal-overlay" style="display: none">
+      <div class="login-modal">
+        <form method="post" action="#">
+          {% csrf_token %}
+          <div class="welcome-header">
+            <img
+              src="{% static 'main/images/givetime.png' %}"
+              alt="GiveTime"
+              class="logo-img"
+            />
+            <div class="welcome-text">
+              <div class="brand-name">GIVE TIME 에 오신 것을</div>
+              <span class="highlight">환영합니다!</span>
+            </div>
+          </div>
+
+          <button type="button" class="google-btn">
+            <img
+              src="{% static 'main/images/google.png' %}"
+              class="google-icon"
+              alt="Google"
+            />
+            구글계정으로 로그인하기
+          </button>
+
+          <div class="divider">OR</div>
+
+          <div class="input-box">
+            <img src="{% static 'main/images/message.png' %}" class="input-icon" />
+            <input
+              type="email"
+              name="username"
+              placeholder="example@gmail.com"
+              required
+            />
+            <!-- 🔥 에러 메시지 추가 -->
+            <span
+              class="error-message"
+              style="color: red; font-size: 12px; display: block"
+            ></span>
+          </div>
+
+          <div class="input-box">
+            <img src="{% static 'main/images/key.png' %}" class="input-icon" />
+            <input
+              type="password"
+              name="password"
+              id="loginPassword"
+              placeholder="비밀번호 입력"
+              required
+            />
+            <button
+              type="button"
+              class="toggle-password"
+              onclick="togglePassword('loginPassword')"
+            >
+              👁️
+            </button>
+            <!-- 🔥 에러 메시지 추가 -->
+            <span
+              class="error-message"
+              style="color: red; font-size: 12px; display: block"
+            ></span>
+          </div>
+
+          <div class="options-row">
+            <label><input type="checkbox" /> 사용자 이름 기억</label>
+            <a href="#">비밀번호를 잊어버리셨나요?</a>
+          </div>
+
+          <button type="submit" class="login-btn">로그인</button>
+          <p class="signup-text">
+            계정이 없으신가요?
+            <a
+              href="#"
+              onclick="closeLoginModal(); openSignupModal(); return false;"
+              >회원가입</a
+            >
+          </p>
+
+          <button type="button" onclick="closeLoginModal()" class="close-btn">
+            X
+          </button>
+        </form>
       </div>
+    </div>
 
-      <button type="submit" class="login-btn">로그인</button>
-      <p class="signup-text">
-        계정이 없으신가요?
-        <a
-          href="#"
-          onclick="closeLoginModal(); openSignupModal(); return false;"
-          >회원가입</a
-        >
-      </p>
+    <!-- 회원가입 모달 -->
+    <div id="signupModal" class="modal-overlay" style="display: none">
+      <div class="signup-modal">
+        <form id="signupForm" method="post" action="#">
+          {% csrf_token %}
+          <button type="button" onclick="closeSignupModal()" class="close-btn">
+            X
+          </button>
 
-      <button type="button" onclick="closeLoginModal()" class="close-btn">
-        X
-      </button>
-    </form>
-  </div>
-</div>
+          <div class="input-box">
+            <input type="email" name="email" placeholder="이메일" required />
+            <span
+              class="error-message"
+              style="color: red; font-size: 12px; display: block"
+            ></span>
+            <!-- 🔥 도움말 추가 -->
+            <small class="help-text" style="color: #666; font-size: 11px"
+              >올바른 이메일 형식으로 입력해주세요.</small
+            >
+          </div>
 
-<!-- 회원가입 모달 -->
-<div id="signupModal" class="modal-overlay" style="display: none">
-  <div class="signup-modal">
-    <form id="signupForm" method="post" action="{% url 'account:signup' %}">
-      {% csrf_token %}
-      <button type="button" onclick="closeSignupModal()" class="close-btn">
-        X
-      </button>
+          <div class="input-box">
+            <input type="text" name="nickname" placeholder="닉네임" required />
+            <span
+              class="error-message"
+              style="color: red; font-size: 12px; display: block"
+            ></span>
+            <small class="help-text" style="color: #666; font-size: 11px"
+              >2-20자 사이로 입력해주세요.</small
+            >
+          </div>
 
-      <div class="input-box">
-        <input type="email" name="email" placeholder="이메일" required />
-        <span class="error-message"></span>
+          <div class="input-box">
+            <input
+              type="password"
+              name="password1"
+              id="signupPassword"
+              placeholder="비밀번호"
+              required
+            />
+            <button type="button" onclick="togglePassword('signupPassword')">
+              👁️
+            </button>
+            <span
+              class="error-message"
+              style="color: red; font-size: 12px; display: block"
+            ></span>
+            <small class="help-text" style="color: #666; font-size: 11px"
+              >8자 이상, 영문과 숫자를 포함해주세요.</small
+            >
+          </div>
+
+          <div class="input-box">
+            <input
+              type="password"
+              name="password2"
+              id="confirmPassword"
+              placeholder="비밀번호 확인"
+              required
+            />
+            <button type="button" onclick="togglePassword('confirmPassword')">
+              👁️
+            </button>
+            <span
+              class="error-message"
+              style="color: red; font-size: 12px; display: block"
+            ></span>
+            <small class="help-text" style="color: #666; font-size: 11px"
+              >위 비밀번호와 동일하게 입력해주세요.</small
+            >
+          </div>
+
+          <div class="input-box">
+            <input type="text" name="location" placeholder="거주지" required />
+            <span
+              class="error-message"
+              style="color: red; font-size: 12px; display: block"
+            ></span>
+            <small class="help-text" style="color: #666; font-size: 11px"
+              >현재 거주하시는 지역을 입력해주세요.</small
+            >
+          </div>
+
+          <button type="submit" class="signup-btn">회원가입</button>
+        </form>
       </div>
+    </div>
 
-      <div class="input-box">
-        <input type="text" name="nickname" placeholder="닉네임" required />
-        <span class="error-message"></span>
-      </div>
-
-      <div class="input-box">
-        <input
-          type="password"
-          name="password1"
-          id="signupPassword"
-          placeholder="비밀번호"
-          required
-        />
-        <button type="button" onclick="togglePassword('signupPassword')">
-          👁️
-        </button>
-        <span class="error-message"></span>
-      </div>
-
-      <div class="input-box">
-        <input
-          type="password"
-          name="password2"
-          id="confirmPassword"
-          placeholder="비밀번호 확인"
-          required
-        />
-        <button type="button" onclick="togglePassword('confirmPassword')">
-          👁️
-        </button>
-        <span class="error-message"></span>
-      </div>
-
-      <div class="input-box">
-        <input type="text" name="location" placeholder="거주지" required />
-        <span class="error-message"></span>
-      </div>
-
-      <button type="submit" class="signup-btn">회원가입</button>
-    </form>
-  </div>
-</div>
-
-<script src="{% static 'main/main.js' %}"></script>
+    <script src="{% static 'main/main.js' %}" defer></script>
+  </body>
+</html>

@@ -17,7 +17,7 @@ function showPopup(message, duration = 3000) {
 document.addEventListener("DOMContentLoaded", () => {
   const msg = sessionStorage.getItem("popupMessage");
   if (msg) {
-    showPopup("🎉 " + msg, 3000);
+    showPopup(msg, 3000);
     sessionStorage.removeItem("popupMessage");
   }
 });

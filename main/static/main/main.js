@@ -239,6 +239,7 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .then((data) => {
         window.location.href = data.redirect_url;
+         sessionStorage.setItem("popupMessage", data.message || "");
       })
       .catch((err) => {
         console.error("로그아웃 에러:", err);

@@ -10,21 +10,23 @@
     <div id="header">{% include 'main/header.html' %}</div>
 
     <main class="profile-card">
-      {% if profile_image %}
-      <img
-        src="{{ profile_image }}"
-        alt="프로필 이미지"
-        class="profile-img"
-        id="profile-img"
-      />
-      {% else %}
-      <img
-        src="{% static 'images/default_profile.png' %}"
-        alt="기본 프로필 이미지"
-        class="profile-img"
-        id="profile-img"
-      />
-      {% endif %}
+      <div class="profile-header">
+        <div class="profile-img-wrapper">
+          {% if profile_image %}
+          <img
+            src="{{ profile_image }}"
+            alt="프로필 이미지"
+            class="profile-img"
+          />
+          {% else %}
+          <img
+            src="{% static 'images/default_profile.png' %}"
+            alt="기본 프로필"
+            class="profile-img"
+          />
+          {% endif %}
+        </div>
+      </div>
 
       <div class="profile-info">
         <h2>{{ nickname }}</h2>
@@ -37,19 +39,20 @@
 
       <section class="about-section">
         <h3>About</h3>
-        <p class="about-text">{{ about }}</p>
+        <p class="about-text">{{ about|default:"None" }}</p>
       </section>
 
       <section class="skills-box">
         <h3>주요 기술 및 역량</h3>
-        <p class="about-text">{{ skills }}</p>
+        <p class="about-text">{{ skills|default:"None" }}</p>
       </section>
 
       <section class="services-section">
         <h3>Services</h3>
-        <p class="about-text">{{ services }}</p>
+        <p class="about-text">{{ services|default:"None" }}</p>
         <button>Request services</button>
       </section>
+
       <a href="{% url 'mypage:edit_profile' %}">프로필 수정</a>
     </main>
 

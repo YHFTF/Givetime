@@ -166,6 +166,10 @@ section {
   border-bottom-left-radius: 24px;
   border-bottom-right-radius: 24px;
   flex: 1;
+   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 }
 .card-body2 {
   background-color: pink;
@@ -176,6 +180,10 @@ section {
   border-bottom-left-radius: 24px;
   border-bottom-right-radius: 24px;
   flex: 1;
+   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 }
 
 .title {

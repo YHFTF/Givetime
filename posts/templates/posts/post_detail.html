@@ -13,11 +13,17 @@
   <!-- 작성자 정보 -->
   <div class="author-info">
     {% if post.author.profile_image %}
-      <img src="{{ post.author.profile_image.url }}" alt="작성자 프로필" class="profile-img-small" />
+      <a href="{% url 'mypage:view_profile' post.author.id %}">
+        <img src="{{ post.author.profile_image.url }}" alt="작성자 프로필" class="profile-img-small" />
+      </a>
     {% else %}
-      <img src="{% static 'images/default_profile.png' %}" alt="기본 프로필" class="profile-img-small" />
+      <a href="{% url 'mypage:view_profile' post.author.id %}">
+        <img src="{% static 'images/default_profile.png' %}" alt="기본 프로필" class="profile-img-small" />
+      </a>
     {% endif %}
-    <strong>{{ post.author.nickname }}</strong>
+    <a href="{% url 'mypage:view_profile' post.author.id %}">
+      <strong>{{ post.author.nickname }}</strong>
+    </a>
     <span class="date">{{ post.created_at|date:"Y-m-d H:i" }}</span>
   </div>
 
@@ -33,18 +39,15 @@
 
   <p>{{ post.content|linebreaks }}</p>
 
-
   {% if user == post.author %}
     <div class="post-actions">
-    <a href="{% url 'post_update' post.post_type post.id %}" class="action-btn">수정</a>
-    <form action="{% url 'post_delete' post.post_type post.id %}" method="post" style="display: inline">
-      {% csrf_token %}
-      <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
-    </form>
-  </div>
+      <a href="{% url 'post_update' post.post_type post.id %}" class="action-btn">수정</a>
+      <form action="{% url 'post_delete' post.post_type post.id %}" method="post" style="display: inline">
+        {% csrf_token %}
+        <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
+      </form>
+    </div>
   {% endif %}
-
-   
 
   <h3>댓글</h3>
 
@@ -64,11 +67,17 @@
       <li>
         <div class="author-info">
           {% if comment.author.profile_image %}
-            <img src="{{ comment.author.profile_image.url }}" alt="작성자 프로필" class="profile-img-small" />
+            <a href="{% url 'mypage:view_profile' comment.author.id %}">
+              <img src="{{ comment.author.profile_image.url }}" alt="작성자 프로필" class="profile-img-small" />
+            </a>
           {% else %}
-            <img src="{% static 'images/default_profile.png' %}" alt="기본 프로필" class="profile-img-small" />
+            <a href="{% url 'mypage:view_profile' comment.author.id %}">
+              <img src="{% static 'images/default_profile.png' %}" alt="기본 프로필" class="profile-img-small" />
+            </a>
           {% endif %}
-          <strong>{{ comment.author.nickname }}</strong>
+          <a href="{% url 'mypage:view_profile' comment.author.id %}">
+            <strong>{{ comment.author.nickname }}</strong>
+          </a>
           <span class="date">{{ comment.created_at|date:"Y-m-d H:i" }}</span>
         </div>
         <p>{{ comment.content }}</p>

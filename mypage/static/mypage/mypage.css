@@ -205,3 +205,30 @@ body {
   vertical-align: baseline;
   line-height: inherit;
 }
+
+.info-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    #edit-btn {
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    #save-btn {
+      background-color: #2ecc71;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }

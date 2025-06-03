@@ -138,23 +138,20 @@ document.addEventListener("DOMContentLoaded", function () {
         .then((data) => {
           if (data.success) {
             // 🔥 성공 시 처리 수정
-            alert(
-              "🎉 회원가입이 완료되었습니다!\n로그인 후 서비스를 이용해주세요."
-            );
+            showPopup("🎉 회원가입에 성공했습니다. 로그인 후 이용해주세요");
             closeSignupModal();
             signupForm.reset(); // 폼 초기화
             // 로그인 모달 자동 열기
             openLoginModal();
           } else {
             // 실패 시 서버 에러 메시지 표시
-            alert(
-              data.message || "회원가입에 실패했습니다. 입력값을 확인해주세요."
-            );
+            sessionStorage.setItem("popupMessage", data.message || "회원가입에 실패했습니다. 입력창을 확인해주세요");
+
           }
         })
         .catch((error) => {
           console.error("Error:", error);
-          alert("회원가입 중 오류가 발생했습니다.");
+          showPopup("회원가입 중 오류가 발생했습니다.");
         })
         .finally(() => {
           // 버튼 상태 복원
@@ -197,20 +194,18 @@ document.addEventListener("DOMContentLoaded", function () {
           .then((data) => {
             if (data.success) {
               // 로그인 성공
-              alert("🎉 " + (data.message || "로그인에 성공했습니다!"));
               closeLoginModal();
-              loginForm.reset(); // 폼 초기화
-
+              sessionStorage.setItem("popupMessage", data.message || "로그인에 성공했습니다!");
               // 페이지 새로고침
               window.location.reload();
             } else {
               // 로그인 실패
-              alert("❌ " + (data.message || "로그인에 실패했습니다."));
+              sessionStorage.setItem("popupMessage", data.message || "로그인에 실패했습니다!");
             }
           })
           .catch((error) => {
             console.error("Error:", error);
-            alert("로그인 중 오류가 발생했습니다.");
+            sessionStorage.setItem("popupMessage", data.message || "로그인 중 오류가 발생했습니다.");
           })
           .finally(() => {
             // 버튼 상태 복원
@@ -243,12 +238,12 @@ document.addEventListener("DOMContentLoaded", function () {
         return res.json();
       })
       .then((data) => {
-        alert(data.message);
         window.location.href = data.redirect_url;
+         sessionStorage.setItem("popupMessage", data.message || "");
       })
       .catch((err) => {
         console.error("로그아웃 에러:", err);
-        alert("로그아웃 중 오류가 발생했습니다.");
+        sessionStorage.setItem("popupMessage", data.message || "로그아웃 중 오류가 발생했습니다.");
       });
   });
 });
@@ -324,4 +319,3 @@ document.addEventListener("keydown", function (e) {
     closeSignupModal();
   }
 });
-

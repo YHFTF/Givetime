@@ -166,6 +166,10 @@ section {
   border-bottom-left-radius: 24px;
   border-bottom-right-radius: 24px;
   flex: 1;
+   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 }
 .card-body2 {
   background-color: pink;
@@ -176,6 +180,10 @@ section {
   border-bottom-left-radius: 24px;
   border-bottom-right-radius: 24px;
   flex: 1;
+   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 }
 
 .title {
@@ -212,4 +220,14 @@ section {
   background-repeat: no-repeat;
   padding: 60px 20px; /* 내부 여백 */
   border-radius: 20px;
+}
+
+#sakuraCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
 }

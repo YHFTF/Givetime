@@ -6,8 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GiveTime - 재능 기부 플랫폼</title>
     <link rel="stylesheet" href="{% static 'main/main.css' %}" />
+    <script src="{% static 'main/sakura.js' %}"></script>
   </head>
   <body>
+    <canvas id="sakuraCanvas"></canvas>
     <div id="header">{% include 'main/header.html' %}</div>
 
     <div class="main-banner">
@@ -55,10 +57,11 @@
           </div>
           <div class="card-body1">
             <div class="title">{{ post.title }}</div>
-            <div>작성일: {{ post.created_at|date:"Y-m-d H:i" }}</div>
-            <div class="detail-link">
-              <a href="/posts/donation/{{ post.id }}/">상세보기</a>
-            </div>
+
+             <div class="card-bottom">
+    <span class="date">작성일: {{ post.created_at|date:"Y-m-d H:i" }}</span>
+    <a href="/posts/donation/{{ post.id }}/" class="detail-link">상세보기</a>
+  </div>
           </div>
         </div>
         {% empty %}
@@ -83,10 +86,10 @@
           </div>
           <div class="card-body2">
             <div class="title">{{ post.title }}</div>
-            <div>작성일: {{ post.created_at|date:"Y-m-d H:i" }}</div>
-            <div class="detail-link">
-              <a href="/posts/story/{{ post.id }}/">상세보기</a>
-            </div>
+            <div class="card-bottom">
+    <span class="date">작성일: {{ post.created_at|date:"Y-m-d H:i" }}</span>
+    <a href="/posts/donation/{{ post.id }}/" class="detail-link">상세보기</a>
+  </div>
           </div>
         </div>
         {% empty %}
@@ -95,5 +98,6 @@
       </div>
     </section>
     {% include 'main/footer.html' %}
+    <div id="popupMessage" class="popup-message" style="display: none;"></div> <!-- 팝업 메시지 -->
   </body>
 </html>

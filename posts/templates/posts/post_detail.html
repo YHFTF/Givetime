@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>{{ post.title }}</title>
-  <link rel="stylesheet" href="{% static 'posts/board.css' %}" />
+  <link rel="stylesheet" href="{% static 'posts/detail.css' %}" />
 </head>
 <body>
 
@@ -33,15 +33,18 @@
 
   <p>{{ post.content|linebreaks }}</p>
 
-  <br />
 
   {% if user == post.author %}
-    <a href="{% url 'post_update' post.post_type post.id %}">수정</a>
+    <div class="post-actions">
+    <a href="{% url 'post_update' post.post_type post.id %}" class="action-btn">수정</a>
     <form action="{% url 'post_delete' post.post_type post.id %}" method="post" style="display: inline">
       {% csrf_token %}
       <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
     </form>
+  </div>
   {% endif %}
+
+   
 
   <h3>댓글</h3>
 

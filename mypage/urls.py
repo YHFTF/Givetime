@@ -5,5 +5,6 @@ app_name = 'mypage'
 
 urlpatterns = [
     path('', views.my_page, name='my_page'),
+    path('view/<int:user_id>/', views.view_profile, name='view_profile'),
     path('update/<int:user_id>/', views.update_profile, name='update_profile'),
 ]

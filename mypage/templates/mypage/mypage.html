@@ -1,61 +1,75 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <title>마이페이지 | Give Time</title>
-    <link rel="stylesheet" href="{% static 'mypage/mypage.css' %}" />
-  </head>
-  <body>
-    <div id="header">{% include 'main/header.html' %}</div>
+<head>
+  <meta charset="UTF-8" />
+  <title>마이페이지 | Give Time</title>
+  <link rel="stylesheet" href="{% static 'mypage/mypage.css' %}" />
+</head>
+<body>
+  <div id="header">{% include 'main/header.html' %}</div>
 
-    <main class="profile-card">
-      <div class="profile-header">
-        <div class="profile-img-wrapper">
-          {% if profile_image %}
-          <img
-            src="{{ profile_image }}"
-            alt="프로필 이미지"
-            class="profile-img"
-          />
-          {% else %}
-          <img
-            src="{% static 'images/default_profile.png' %}"
-            alt="기본 프로필"
-            class="profile-img"
-          />
-          {% endif %}
-        </div>
+  <input type="file" id="profile-image-input" accept="image/*" />
+
+  <main class="profile-card">
+    <div class="profile-header">
+      <div class="profile-img-wrapper">
+        {% if profile_image %}
+        <img src="{{ profile_image }}" alt="프로필 이미지" class="profile-img" id="profile-img" />
+        {% else %}
+        <img src="{% static 'images/default_profile.png' %}" alt="기본 프로필" class="profile-img" id="profile-img" />
+        {% endif %}
       </div>
+    </div>
 
-      <div class="profile-info">
-        <h2>{{ nickname }}</h2>
-        <p>이메일: {{ email }}</p>
-        <p>지역: {{ location }}</p>
-        <div class="badges">
-          <span class="badge">활동회원</span>
-        </div>
-      </div>
+    <div class="profile-info">
+      <h2>
+        <span id="nickname-text">{{ nickname }}</span>
+        <input type="text" id="nickname-input" value="{{ nickname }}" class="inline-edit" style="display: none;" />
+      </h2>
+      <p>
+        이메일: <span id="email-text">{{ email }}</span>
+        <input type="email" id="email-input" value="{{ email }}" class="inline-edit" style="display: none;" />
+      </p>
+      <p>
+        지역: <span id="location-text">{{ location }}</span>
+        <input type="text" id="location-input" value="{{ location }}" class="inline-edit" style="display: none;" />
+      </p>
+    </div>
 
-      <section class="about-section">
-        <h3>About</h3>
-        <p class="about-text">{{ about|default:"None" }}</p>
-      </section>
+    <section class="about-section">
+      <h3>About</h3>
+      <p>
+        <span id="about-text">{{ about|default:"None" }}</span>
+        <textarea id="about-input" class="inline-edit" style="display: none;">{{ about }}</textarea>
+      </p>
+    </section>
 
-      <section class="skills-box">
-        <h3>주요 기술 및 역량</h3>
-        <p class="about-text">{{ skills|default:"None" }}</p>
-      </section>
+    <section class="skills-box">
+      <h3>Skills</h3>
+      <p>
+        <span id="skills-text">{{ skills|default:"None" }}</span>
+        <textarea id="skills-input" class="inline-edit" style="display: none;">{{ skills }}</textarea>
+      </p>
+    </section>
 
-      <section class="services-section">
-        <h3>Services</h3>
-        <p class="about-text">{{ services|default:"None" }}</p>
-        <button>Request services</button>
-      </section>
+    <section class="services-section">
+      <h3>Services</h3>
+      <p>
+        <span id="services-text">{{ services|default:"None" }}</span>
+        <textarea id="services-input" class="inline-edit" style="display: none;">{{ services }}</textarea>
+      </p>
+    </section>
 
-      <a href="{% url 'mypage:edit_profile' %}">프로필 수정</a>
-    </main>
+    <button id="edit-btn">수정</button>
+    <button id="save-btn" style="display: none;">저장</button>
+  </main>
 
-    <div id="footer">{% include 'main/footer.html' %}</div>
-  </body>
+  <div id="footer">{% include 'main/footer.html' %}</div>
+
+  <script>
+    const USER_ID = {{ user.id }};
+  </script>
+  <script src="{% static 'mypage/mypage.js' %}"></script>
+</body>
 </html>

@@ -64,6 +64,9 @@
           <input type="text" name="q" placeholder="닉네임 검색" required />
           <button type="submit">검색</button>
         </form>
+        {% if not is_owner %}
+        <a href="{% url 'chat:room' nickname %}" class="chat-btn">1대1 채팅</a>
+        {% endif %}
         <p>
           {% if is_owner %} 이메일: <span id="email-text">{{ email }}</span>
           <input

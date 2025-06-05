@@ -374,17 +374,18 @@
           <div class="divider">OR</div>
 
           <div class="input-box">
-            <img src="{% static 'main/images/message.png' %}" class="input-icon" />
+            <img
+              src="{% static 'main/images/message.png' %}"
+              class="input-icon"
+            />
             <input
-              type="email"
+              type="text"
               name="username"
               placeholder="example@gmail.com"
               required
             />
-            <!-- 🔥 에러 메시지 추가 -->
             <span
               class="error-message"
-              style="color: red; font-size: 12px; display: block"
             ></span>
           </div>
 
@@ -404,10 +405,8 @@
             >
               👁️
             </button>
-            <!-- 🔥 에러 메시지 추가 -->
             <span
               class="error-message"
-              style="color: red; font-size: 12px; display: block"
             ></span>
           </div>
 
@@ -443,26 +442,18 @@
           </button>
 
           <div class="input-box">
-            <input type="email" name="email" placeholder="이메일" required />
-            <span
-              class="error-message"
-              style="color: red; font-size: 12px; display: block"
-            ></span>
+            <input type="text" name="email" placeholder="이메일" required />
+            <span class="error-message"></span>
             <!-- 🔥 도움말 추가 -->
-            <small class="help-text" style="color: #666; font-size: 11px"
+            <small class="help-text"
               >올바른 이메일 형식으로 입력해주세요.</small
             >
           </div>
 
           <div class="input-box">
             <input type="text" name="nickname" placeholder="닉네임" required />
-            <span
-              class="error-message"
-              style="color: red; font-size: 12px; display: block"
-            ></span>
-            <small class="help-text" style="color: #666; font-size: 11px"
-              >2-20자 사이로 입력해주세요.</small
-            >
+            <span class="error-message"></span>
+            <small class="help-text">2-20자 사이로 입력해주세요.</small>
           </div>
 
           <div class="input-box">
@@ -476,11 +467,8 @@
             <button type="button" onclick="togglePassword('signupPassword')">
               👁️
             </button>
-            <span
-              class="error-message"
-              style="color: red; font-size: 12px; display: block"
-            ></span>
-            <small class="help-text" style="color: #666; font-size: 11px"
+            <span class="error-message"></span>
+            <small class="help-text"
               >8자 이상, 영문과 숫자를 포함해주세요.</small
             >
           </div>
@@ -496,22 +484,16 @@
             <button type="button" onclick="togglePassword('confirmPassword')">
               👁️
             </button>
-            <span
-              class="error-message"
-              style="color: red; font-size: 12px; display: block"
-            ></span>
-            <small class="help-text" style="color: #666; font-size: 11px"
+            <span class="error-message"></span>
+            <small class="help-text"
               >위 비밀번호와 동일하게 입력해주세요.</small
             >
           </div>
 
           <div class="input-box">
             <input type="text" name="location" placeholder="거주지" required />
-            <span
-              class="error-message"
-              style="color: red; font-size: 12px; display: block"
-            ></span>
-            <small class="help-text" style="color: #666; font-size: 11px"
+            <span class="error-message"></span>
+            <small class="help-text"
               >현재 거주하시는 지역을 입력해주세요.</small
             >
           </div>

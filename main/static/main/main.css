@@ -231,3 +231,18 @@ section {
   width: 100%;
   height: 100%;
 }
+
+.error-message {
+  color: red;
+  font-size: 12px;
+  min-height: 18px; /* 에러 메시지가 없을 때도 공간 유지 */
+  display: block;
+  margin-top: 4px;
+}
+
+/* 도움말 텍스트 스타일 */
+.help-text {
+  color: #666;
+  font-size: 11px;
+  margin-top: 2px;
+}

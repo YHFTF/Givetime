@@ -1,6 +1,7 @@
 from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.http import JsonResponse
+from django.views.decorators.http import require_GET
 
 User = get_user_model()
 
@@ -61,3 +62,9 @@ def logout_view(request):
         'message': '👋 로그아웃 되었습니다!',
         'redirect_url': '/'
     })
+
+@require_GET
+def check_nickname(request):
+    nickname = request.GET.get('nickname', '').strip()
+    exists = User.objects.filter(nickname=nickname).exists()
+    return JsonResponse({'exists': exists})

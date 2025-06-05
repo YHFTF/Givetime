@@ -15,10 +15,8 @@ document.addEventListener("DOMContentLoaded", function () {
   if (wrapper) {
     const slides = Array.from(wrapper.children);
     const slideCount = slides.length;
-
     const firstClone = slides[0].cloneNode(true);
     wrapper.appendChild(firstClone);
-
     let index = 0;
 
     setInterval(() => {
@@ -39,9 +37,10 @@ document.addEventListener("DOMContentLoaded", function () {
   // ✅ 회원가입 모달 Ajax 요청
   const signupForm = document.getElementById("signupForm");
   if (signupForm) {
-    signupForm.addEventListener("submit", function (e) {
+    signupForm.addEventListener("submit", async function (e) {
       e.preventDefault();
 
+      // 에러 메시지 초기화
       const errorMessages = signupForm.querySelectorAll(".error-message");
       errorMessages.forEach((span) => (span.textContent = ""));
 
@@ -56,97 +55,116 @@ document.addEventListener("DOMContentLoaded", function () {
       // 이메일 검사
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!email.value.trim()) {
-        email.nextElementSibling.textContent = "이메일을 입력해주세요.";
+        setErrorMessage(email, "이메일을 입력해주세요.");
         valid = false;
       } else if (!emailPattern.test(email.value)) {
-        email.nextElementSibling.textContent =
-          "올바른 이메일 형식을 입력해주세요. (예: user@example.com)";
+        setErrorMessage(
+          email,
+          "올바른 이메일 형식을 입력해주세요. (예: user@example.com)"
+        );
         valid = false;
       }
 
       // 닉네임 검사
       if (!nickname.value.trim()) {
-        nickname.nextElementSibling.textContent = "닉네임을 입력해주세요.";
+        setErrorMessage(nickname, "닉네임을 입력해주세요.");
         valid = false;
       } else if (nickname.value.trim().length < 2) {
-        nickname.nextElementSibling.textContent =
-          "닉네임은 2자 이상이어야 합니다.";
+        setErrorMessage(nickname, "닉네임은 2자 이상이어야 합니다.");
         valid = false;
       } else if (nickname.value.trim().length > 20) {
-        nickname.nextElementSibling.textContent =
-          "닉네임은 20자 이하여야 합니다.";
+        setErrorMessage(nickname, "닉네임은 20자 이하여야 합니다.");
         valid = false;
+      }
+
+      // 닉네임 중복 검사 (기본 유효성 통과 후 실행)
+      if (valid) {
+        const nicknameCheck = await checkNicknameDuplicate(nickname);
+        if (!nicknameCheck) {
+          valid = false;
+        }
       }
 
       // 비밀번호 검사
       if (!password1.value) {
-        password1.nextElementSibling.textContent =
-          "비밀번호를 영문과 숫자를 포함하여 8자 이상 입력해주세요.";
+        setErrorMessage(
+          password1,
+          "비밀번호를 영문과 숫자를 포함하여 8자 이상 입력해주세요."
+        );
         valid = false;
       } else if (password1.value.length < 8) {
-        password1.nextElementSibling.textContent =
-          "비밀번호는 8자 이상이어야 합니다.";
+        setErrorMessage(password1, "비밀번호는 8자 이상이어야 합니다.");
         valid = false;
       } else if (!/(?=.*[a-zA-Z])(?=.*\d)/.test(password1.value)) {
-        password1.nextElementSibling.textContent =
-          "비밀번호는 영문과 숫자를 포함해야 합니다.";
+        setErrorMessage(password1, "비밀번호는 영문과 숫자를 포함해야 합니다.");
         valid = false;
       }
 
       // 비밀번호 확인
       if (!password2.value) {
-        password2.nextElementSibling.textContent =
-          "비밀번호 확인을 입력해주세요.";
+        setErrorMessage(password2, "비밀번호 확인을 입력해주세요.");
         valid = false;
       } else if (password1.value !== password2.value) {
-        password2.nextElementSibling.textContent =
-          "비밀번호가 일치하지 않습니다.";
+        setErrorMessage(password2, "비밀번호가 일치하지 않습니다.");
         valid = false;
       }
 
       // 거주지 검사
       if (!location.value.trim()) {
-        location.nextElementSibling.textContent = "거주지를 입력해주세요.";
+        setErrorMessage(location, "거주지를 입력해주세요.");
         valid = false;
       }
 
-      if (!valid) {
-        return; // 오류가 있으면 서버 요청 안함
+      if (!valid) return; // 유효성 통과 못하면 종료
+
+      async function checkNicknameDuplicate(nicknameInput) {
+        const nick = nicknameInput.value.trim();
+        try {
+          const response = await fetch(
+            `/account/check-nickname/?nickname=${encodeURIComponent(nick)}`
+          );
+          const data = await response.json();
+          if (data.exists) {
+            setErrorMessage(nicknameInput, "이미 사용 중인 닉네임입니다.");
+            return false;
+          } else {
+            setErrorMessage(nicknameInput, "");
+            return true;
+          }
+        } catch (error) {
+          console.error("닉네임 확인 오류:", error);
+          setErrorMessage(nicknameInput, "중복 확인 중 오류가 발생했습니다.");
+          return false;
+        }
       }
 
       const formData = new FormData(signupForm);
       const csrfToken = document.querySelector(
         'input[name="csrfmiddlewaretoken"]'
       ).value;
-
-      // 로딩 상태 표시
       const submitButton = signupForm.querySelector('button[type="submit"]');
       const originalText = submitButton.textContent;
+
       submitButton.textContent = "회원가입 중...";
       submitButton.disabled = true;
 
       fetch("/account/signup/", {
         method: "POST",
-        headers: {
-          "X-CSRFToken": csrfToken,
-        },
+        headers: { "X-CSRFToken": csrfToken },
         body: formData,
       })
-        .then((response) => {
-          return response.json();
-        })
+        .then((response) => response.json())
         .then((data) => {
           if (data.success) {
-            // 🔥 성공 시 처리 수정
             showPopup("🎉 회원가입에 성공했습니다. 로그인 후 이용해주세요");
             closeSignupModal();
-            signupForm.reset(); // 폼 초기화
-            // 로그인 모달 자동 열기
+            signupForm.reset();
             openLoginModal();
           } else {
-            // 실패 시 서버 에러 메시지 표시
-            sessionStorage.setItem("popupMessage", data.message || "회원가입에 실패했습니다. 입력창을 확인해주세요");
-
+            sessionStorage.setItem(
+              "popupMessage",
+              data.message || "회원가입에 실패했습니다. 입력창을 확인해주세요"
+            );
           }
         })
         .catch((error) => {
@@ -154,14 +172,12 @@ document.addEventListener("DOMContentLoaded", function () {
           showPopup("회원가입 중 오류가 발생했습니다.");
         })
         .finally(() => {
-          // 버튼 상태 복원
           submitButton.textContent = originalText;
           submitButton.disabled = false;
         });
     });
   }
 
-  // ✅ 로그인 모달 Ajax 요청 (기존 폼 구조에 맞춤)
   const loginModal = document.getElementById("loginModal");
   if (loginModal) {
     const loginForm = loginModal.querySelector("form");
@@ -195,17 +211,28 @@ document.addEventListener("DOMContentLoaded", function () {
             if (data.success) {
               // 로그인 성공
               closeLoginModal();
-              sessionStorage.setItem("popupMessage", data.message || "로그인에 성공했습니다!");
+              sessionStorage.setItem(
+                "popupMessage",
+                data.message || "로그인에 성공했습니다!"
+              );
               // 페이지 새로고침
               window.location.reload();
             } else {
               // 로그인 실패
-              sessionStorage.setItem("popupMessage", data.message || "로그인에 실패했습니다!");
+              sessionStorage.setItem(
+                "popupMessage",
+                data.message || "로그인에 실패했습니다! 이메일 또는 비밀번호를 다시 입력해주세요."
+              );
+              showPopup("로그인에 실패했습니다! 이메일 또는 비밀번호를 다시 입력해주세요.");
             }
           })
           .catch((error) => {
             console.error("Error:", error);
-            sessionStorage.setItem("popupMessage", data.message || "로그인 중 오류가 발생했습니다.");
+            sessionStorage.setItem(
+              "popupMessage",
+              "로그인 중 오류가 발생했습니다."
+            );
+            showPopup("로그인 중 오류가 발생했습니다.");
           })
           .finally(() => {
             // 버튼 상태 복원
@@ -239,11 +266,14 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .then((data) => {
         window.location.href = data.redirect_url;
-         sessionStorage.setItem("popupMessage", data.message || "");
+        sessionStorage.setItem("popupMessage", data.message || "");
       })
       .catch((err) => {
         console.error("로그아웃 에러:", err);
-        sessionStorage.setItem("popupMessage", data.message || "로그아웃 중 오류가 발생했습니다.");
+        sessionStorage.setItem(
+          "popupMessage",
+          "로그아웃 중 오류가 발생했습니다."
+        );
       });
   });
 });
@@ -319,3 +349,11 @@ document.addEventListener("keydown", function (e) {
     closeSignupModal();
   }
 });
+
+function setErrorMessage(input, message) {
+  const errorSpan = input.parentElement.querySelector(".error-message");
+  const helpText = input.parentElement.querySelector(".help-text");
+
+  if (errorSpan) errorSpan.textContent = message;
+  if (helpText) helpText.style.display = message ? "none" : "block";
+}

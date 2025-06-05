@@ -44,12 +44,22 @@ def search_user(request):
     if query:
         try:
             user_obj = CustomUser.objects.get(nickname=query)
-            # 네임스페이스 포함한 URL 이름으로 변경
             return redirect('mypage:view_profile', nickname=user_obj.nickname)
         except CustomUser.DoesNotExist:
-            return render(request, 'mypage/search_result.html', {'error': '사용자를 찾을 수 없습니다.'})
-    # 'mypage:my_page'로 변경
+            # mypage.html에 오류 메시지를 전달
+            return render(request, 'mypage/mypage.html', {
+                'nickname': request.user.nickname,
+                'email': request.user.email,
+                'location': request.user.location,
+                'about': request.user.about or '소개를 작성해주세요!',
+                'skills': request.user.skills or '스킬을 입력해주세요!',
+                'services': request.user.services or '서비스를 입력해주세요!',
+                'profile_image': request.user.profile_image.url if request.user.profile_image else None,
+                'is_owner': True,
+                'error': '존재하지 않는 사용자입니다.'
+            })
     return redirect('mypage:my_page')
+
 
 # 내 프로필 수정 (ID 기준)
 @csrf_exempt

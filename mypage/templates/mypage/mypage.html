@@ -56,7 +56,11 @@
           {% endif %}
         </div>
         <!--사용자 검색 버튼-->
-        <form action="{% url 'mypage:search_user' %}" method="get" class="search-form">
+        <form
+          action="{% url 'mypage:search_user' %}"
+          method="get"
+          class="search-form"
+        >
           <input type="text" name="q" placeholder="닉네임 검색" required />
           <button type="submit">검색</button>
         </form>
@@ -139,6 +143,11 @@
     <script>
       const USER_ID = {{ user.id }};
     </script>
+    {% if error %}
+    <script>
+      alert("{{ error }}");
+    </script>
+    {% endif %}
     <script src="{% static 'mypage/mypage.js' %}"></script>
   </body>
 </html>

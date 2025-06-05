@@ -37,10 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
     'main',
     'posts',
     'mypage',
     'account',
+    'chat',
 ]
 
 
@@ -73,6 +75,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'Givetime.wsgi.application'
+ASGI_APPLICATION = 'Givetime.asgi.application'
 
 
 # Database
@@ -132,3 +135,9 @@ AUTH_USER_MODEL = 'account.CustomUser'
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    }
+}

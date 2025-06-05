@@ -10,6 +10,7 @@ urlpatterns = [
     path('posts/', include('posts.urls')),
     path('mypage/', include('mypage.urls')),
     path('account/', include('account.urls')),
+    path('chat/', include('chat.urls')),
 ]
 
 if settings.DEBUG:

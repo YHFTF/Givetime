@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from .models import ChatRoom, Message
+from django.utils import timezone
 
 
 User = get_user_model()
@@ -20,6 +21,8 @@ def chat_list(request):
         other = room.participants.exclude(id=request.user.id).first()
         if other:
             room_info.append({'room': room, 'user': other})
+    request.user.last_message_read_time = timezone.now()
+    request.user.save(update_fields=['last_message_read_time'])
     return render(request, 'chat/list.html', {'rooms': room_info})
 
 
@@ -30,6 +33,8 @@ def room(request, nickname):
     room, created = ChatRoom.objects.get_or_create(name=room_name)
     room.participants.add(request.user, other_user)
     messages = room.messages.all()
+    request.user.last_message_read_time = timezone.now()
+    request.user.save(update_fields=['last_message_read_time'])
     return render(
         request,
         'chat/room.html',

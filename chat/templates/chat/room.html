@@ -1,45 +1,56 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
     <meta charset="utf-8">
-    <title>Chat with {{ other_user.nickname }}</title>
+    <title>{{ other_user.nickname }}님과의 채팅</title>
+    <link rel="stylesheet" href="{% static 'main/main.css' %}">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
+        body { font-family: Arial, sans-serif; }
         #chat-log {
             border: 1px solid #ccc;
             height: 300px;
             overflow-y: scroll;
             padding: 10px;
+            display: flex;
+            flex-direction: column;
         }
-        .msg {
-            margin-bottom: 8px;
+        .bubble {
+            max-width: 70%;
+            padding: 8px 12px;
+            margin: 4px 0;
+            border-radius: 12px;
+            position: relative;
         }
-        .msg.me {
-            text-align: right;
-        }
+        .me { align-self: flex-end; background: #dcf8c6; }
+        .other { align-self: flex-start; background: #fff; border: 1px solid #ccc; }
         .timestamp {
-            font-size: 0.8em;
-            color: #999;
-            margin-left: 4px;
+            font-size: 0.75em;
+            color: #666;
+            display: block;
+            margin-top: 2px;
+            text-align: right;
         }
     </style>
 </head>
 <body>
-    <h2>{{ other_user.nickname }}님과의 채팅</h2>
-    <div id="chat-log">
-        {% for message in messages %}
-            <div class="msg{% if message.sender_id == request.user.id %} me{% endif %}">
-                <strong>{{ message.sender.nickname }}:</strong>
-                {{ message.content }}
-                <span class="timestamp">{{ message.timestamp|date:'Y-m-d H:i' }}</span>
-            </div>
-        {% endfor %}
+    <div id="header">{% include 'main/header.html' %}</div>
+    <div class="chat-container" style="max-width:600px;margin:20px auto;">
+        <h2>{{ other_user.nickname }}님과의 채팅</h2>
+        <div id="chat-log">
+            {% for message in messages %}
+                <div class="bubble {% if message.sender_id == request.user.id %}me{% else %}other{% endif %}">
+                    {{ message.content }}
+                    <span class="timestamp">{{ message.timestamp|date:'Y-m-d H:i' }}</span>
+                </div>
+            {% endfor %}
+        </div>
+        <div style="margin-top:10px;display:flex;gap:5px;">
+            <input id="chat-message-input" type="text" style="flex:1;" autocomplete="off" placeholder="메시지 입력..."/>
+            <button id="chat-message-submit">보내기</button>
+        </div>
     </div>
-    <input id="chat-message-input" type="text" autocomplete="off" placeholder="메시지 입력..."/>
-    <button id="chat-message-submit">보내기</button>
+    {% include 'main/footer.html' %}
 
     <script>
         var userId = {{ request.user.id }};
@@ -53,12 +64,17 @@
             var data = JSON.parse(e.data);
             var log = document.getElementById('chat-log');
             var div = document.createElement('div');
-            div.classList.add('msg');
-            if (data.sender_id == userId) div.classList.add('me');
-            var sender = data.sender_id == userId ? '나' : '{{ other_user.nickname }}';
-            div.innerHTML = '<strong>' + sender + ':</strong> ' +
-                            data.message +
-                            ' <span class="timestamp">' + data.timestamp + '</span>';
+            div.classList.add('bubble');
+            if (data.sender_id == userId) {
+                div.classList.add('me');
+            } else {
+                div.classList.add('other');
+            }
+            div.textContent = data.message;
+            var time = document.createElement('span');
+            time.classList.add('timestamp');
+            time.textContent = data.timestamp;
+            div.appendChild(time);
             log.appendChild(div);
             log.scrollTop = log.scrollHeight;
         };

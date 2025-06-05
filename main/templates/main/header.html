@@ -334,6 +334,9 @@
           <a href="{% url 'mypage:my_page' %}">
             <span style="font-size: 1.2em">⭐</span> 마이페이지
           </a>
+          <a href="{% url 'chat:chat_list' %}">
+            <span style="font-size: 1.2em">💬</span> 채팅
+          </a>
           {% else %}
           <!-- 로그인 전 -->
           <a href="#" onclick="openLoginModal()">⭐로그인</a>

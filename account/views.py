@@ -1,5 +1,7 @@
 from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login, logout, get_user_model
+from chat.models import Message
+from django.db.models import Q
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
 
@@ -48,8 +50,16 @@ def login_view(request):
             user = authenticate(request, username=email, password=password)
 
             if user is not None:
+                last_login = user.last_login
                 login(request, user)
-                return JsonResponse({'success': True, 'message': '로그인에 성공했습니다!'})
+                new_messages = False
+                if last_login:
+                    new_messages = Message.objects.filter(
+                        ~Q(sender=user),
+                        room__participants=user,
+                        timestamp__gt=last_login,
+                    ).exists()
+                return JsonResponse({'success': True, 'message': '로그인에 성공했습니다!', 'new_messages': new_messages})
             else:
                 return JsonResponse({'success': False, 'message': '이메일 또는 비밀번호가 올바르지 않습니다.'})
 

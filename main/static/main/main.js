@@ -211,10 +211,11 @@ document.addEventListener("DOMContentLoaded", function () {
             if (data.success) {
               // 로그인 성공
               closeLoginModal();
-              sessionStorage.setItem(
-                "popupMessage",
-                data.message || "로그인에 성공했습니다!"
-              );
+              let msg = data.message || "로그인에 성공했습니다!";
+              if (data.new_messages) {
+                msg += " 새로운 채팅 메시지가 있습니다.";
+              }
+              sessionStorage.setItem("popupMessage", msg);
               // 페이지 새로고침
               window.location.reload();
             } else {

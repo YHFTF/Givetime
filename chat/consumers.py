@@ -9,12 +9,16 @@ User = get_user_model()
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.room_name = self.scope['url_route']['kwargs']['room_name']
-        self.room_group_name = f'chat_{self.room_name}'
+        if self.scope["user"].is_anonymous:
+            await self.close()
+            return
+
+        self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
+        self.room_group_name = f"chat_{self.room_name}"
 
         await self.channel_layer.group_add(
             self.room_group_name,
-            self.channel_name
+            self.channel_name,
         )
 
         await self.accept()
@@ -27,19 +31,22 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         data = json.loads(text_data)
-        message = data['message']
-        sender_id = self.scope['user'].id
+        message = data.get("message", "").strip()
+        if not message:
+            return
+
+        sender_id = self.scope["user"].id
 
         await self.save_message(sender_id, message)
 
         await self.channel_layer.group_send(
             self.room_group_name,
             {
-                'type': 'chat_message',
-                'message': message,
-                'sender_id': sender_id,
-                'timestamp': timezone.now().strftime('%Y-%m-%d %H:%M'),
-            }
+                "type": "chat_message",
+                "message": message,
+                "sender_id": sender_id,
+                "timestamp": timezone.now().strftime("%Y-%m-%d %H:%M"),
+            },
         )
 
     async def chat_message(self, event):

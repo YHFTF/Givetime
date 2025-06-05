@@ -1,124 +1,144 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <title>마이페이지 | Give Time</title>
-  <link rel="stylesheet" href="{% static 'mypage/mypage.css' %}" />
-</head>
-<body>
-  <div id="header">{% include 'main/header.html' %}</div>
+  <head>
+    <meta charset="UTF-8" />
+    <title>마이페이지 | Give Time</title>
+    <link rel="stylesheet" href="{% static 'mypage/mypage.css' %}" />
+  </head>
+  <body>
+    <div id="header">{% include 'main/header.html' %}</div>
 
-  <input type="file" id="profile-image-input" accept="image/*" />
+    <input type="file" id="profile-image-input" accept="image/*" />
 
-  <main class="profile-card">
-    <div class="profile-header">
-      <div class="profile-img-wrapper">
-        {% if profile_image %}
-          <img src="{{ profile_image }}" alt="프로필 이미지" class="profile-img" id="profile-img" />
-        {% else %}
-          <img src="{% static 'images/default_profile.png' %}" alt="기본 프로필" class="profile-img" id="profile-img" />
-        {% endif %}
+    <main class="profile-card">
+      <div class="profile-header">
+        <div class="profile-img-wrapper">
+          {% if profile_image %}
+          <img
+            src="{{ profile_image }}"
+            alt="프로필 이미지"
+            class="profile-img"
+            id="profile-img"
+          />
+          {% else %}
+          <img
+            src="{% static 'images/default_profile.png' %}"
+            alt="기본 프로필"
+            class="profile-img"
+            id="profile-img"
+          />
+          {% endif %}
+        </div>
       </div>
-    </div>
 
-    <div class="profile-info">
-      <!-- 사용자 이름과 버튼을 같은 줄에 정렬 -->
-      <div class="info-header">
-        <h2>
-          {% if is_owner %}
+      <div class="profile-info">
+        <!-- 사용자 이름과 버튼을 같은 줄에 정렬 -->
+        <div class="info-header">
+          <h2>
+            {% if is_owner %}
             <span id="nickname-text">{{ nickname }}</span>
             <input
               type="text"
               id="nickname-input"
               value="{{ nickname }}"
               class="inline-edit"
-              style="display: none;"
+              style="display: none"
             />
-          {% else %}
+            {% else %}
             <span>{{ nickname }}</span>
-          {% endif %}
-        </h2>
+            {% endif %}
+          </h2>
 
-        {% if is_owner %}
+          {% if is_owner %}
           <button id="edit-btn">프로필 수정</button>
-          <button id="save-btn" style="display: none;">저장</button>
-        {% endif %}
-      </div>
-
-      <p>
-        {% if is_owner %}
-          이메일: <span id="email-text">{{ email }}</span>
+          <button id="save-btn" style="display: none">저장</button>
+          {% endif %}
+        </div>
+        <!--사용자 검색 버튼-->
+        <form action="{% url 'mypage:search_user' %}" method="get" class="search-form">
+          <input type="text" name="q" placeholder="닉네임 검색" required />
+          <button type="submit">검색</button>
+        </form>
+        <p>
+          {% if is_owner %} 이메일: <span id="email-text">{{ email }}</span>
           <input
             type="email"
             id="email-input"
             value="{{ email }}"
             class="inline-edit"
-            style="display: none;"
+            style="display: none"
           />
-        {% else %}
-          이메일: <span>{{ email }}</span>
-        {% endif %}
-      </p>
+          {% else %} 이메일: <span>{{ email }}</span>
+          {% endif %}
+        </p>
 
-      <p>
-        {% if is_owner %}
-          지역: <span id="location-text">{{ location }}</span>
+        <p>
+          {% if is_owner %} 지역: <span id="location-text">{{ location }}</span>
           <input
             type="text"
             id="location-input"
             value="{{ location }}"
             class="inline-edit"
-            style="display: none;"
+            style="display: none"
           />
-        {% else %}
-          지역: <span>{{ location }}</span>
-        {% endif %}
-      </p>
-    </div>
+          {% else %} 지역: <span>{{ location }}</span>
+          {% endif %}
+        </p>
+      </div>
 
-    <section class="about-section">
-      <h3>About</h3>
-      <p>
-        {% if is_owner %}
+      <section class="about-section">
+        <h3>About</h3>
+        <p>
+          {% if is_owner %}
           <span id="about-text">{{ about|default:"None" }}</span>
-          <textarea id="about-input" class="inline-edit" style="display: none;">{{ about }}</textarea>
-        {% else %}
+          <textarea id="about-input" class="inline-edit" style="display: none">
+{{ about }}</textarea
+          >
+          {% else %}
           <span>{{ about|default:"None" }}</span>
-        {% endif %}
-      </p>
-    </section>
+          {% endif %}
+        </p>
+      </section>
 
-    <section class="skills-box">
-      <h3>Skills</h3>
-      <p>
-        {% if is_owner %}
+      <section class="skills-box">
+        <h3>Skills</h3>
+        <p>
+          {% if is_owner %}
           <span id="skills-text">{{ skills|default:"None" }}</span>
-          <textarea id="skills-input" class="inline-edit" style="display: none;">{{ skills }}</textarea>
-        {% else %}
+          <textarea id="skills-input" class="inline-edit" style="display: none">
+{{ skills }}</textarea
+          >
+          {% else %}
           <span>{{ skills|default:"None" }}</span>
-        {% endif %}
-      </p>
-    </section>
+          {% endif %}
+        </p>
+      </section>
 
-    <section class="services-section">
-      <h3>Services</h3>
-      <p>
-        {% if is_owner %}
+      <section class="services-section">
+        <h3>Services</h3>
+        <p>
+          {% if is_owner %}
           <span id="services-text">{{ services|default:"None" }}</span>
-          <textarea id="services-input" class="inline-edit" style="display: none;">{{ services }}</textarea>
-        {% else %}
+          <textarea
+            id="services-input"
+            class="inline-edit"
+            style="display: none"
+          >
+{{ services }}</textarea
+          >
+          {% else %}
           <span>{{ services|default:"None" }}</span>
-        {% endif %}
-      </p>
-    </section>
-  </main>
+          {% endif %}
+        </p>
+      </section>
+    </main>
 
-  <div id="footer">{% include 'main/footer.html' %}</div>
+    <div id="footer">{% include 'main/footer.html' %}</div>
 
-  <script>
-    const USER_ID = {{ user.id }};
-  </script>
-  <script src="{% static 'mypage/mypage.js' %}"></script>
-</body>
+    <script>
+      const USER_ID = {{ user.id }};
+    </script>
+    <script src="{% static 'mypage/mypage.js' %}"></script>
+  </body>
 </html>

@@ -1,10 +1,11 @@
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from account.models import CustomUser
 
+# 내 마이페이지
 @login_required
 def my_page(request):
     user = request.user
@@ -16,13 +17,14 @@ def my_page(request):
         'skills': user.skills or '스킬을 입력해주세요!',
         'services': user.services or '서비스를 입력해주세요!',
         'profile_image': user.profile_image.url if user.profile_image else None,
-        'is_owner': True,  # 내 페이지이므로 True
+        'is_owner': True,
     }
     return render(request, 'mypage/mypage.html', context)
 
+# 검색으로 타인 프로필 보기
 @login_required
-def view_profile(request, user_id):
-    user_obj = get_object_or_404(CustomUser, id=user_id)
+def view_profile(request, nickname):
+    user_obj = get_object_or_404(CustomUser, nickname=nickname)
     context = {
         'nickname': user_obj.nickname,
         'email': user_obj.email,
@@ -35,6 +37,21 @@ def view_profile(request, user_id):
     }
     return render(request, 'mypage/mypage.html', context)
 
+# 닉네임 기반 검색 처리
+@login_required
+def search_user(request):
+    query = request.GET.get('q')
+    if query:
+        try:
+            user_obj = CustomUser.objects.get(nickname=query)
+            # 네임스페이스 포함한 URL 이름으로 변경
+            return redirect('mypage:view_profile', nickname=user_obj.nickname)
+        except CustomUser.DoesNotExist:
+            return render(request, 'mypage/search_result.html', {'error': '사용자를 찾을 수 없습니다.'})
+    # 'mypage:my_page'로 변경
+    return redirect('mypage:my_page')
+
+# 내 프로필 수정 (ID 기준)
 @csrf_exempt
 @login_required
 def update_profile(request, user_id):
@@ -44,7 +61,6 @@ def update_profile(request, user_id):
 
         try:
             user = request.user
-
             data_json = request.POST.get('data')
             if data_json:
                 data = json.loads(data_json)

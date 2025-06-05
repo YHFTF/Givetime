@@ -334,8 +334,11 @@
           <a href="{% url 'mypage:my_page' %}">
             <span style="font-size: 1.2em">⭐</span> 마이페이지
           </a>
-          <a href="{% url 'chat:chat_list' %}">
+          <a href="{% url 'chat:chat_list' %}" style="position: relative; display:inline-block;">
             <span style="font-size: 1.2em">💬</span> 채팅
+            {% if has_unread_messages %}
+            <span style="color:red;font-weight:bold;position:absolute;top:-5px;right:-10px;">!</span>
+            {% endif %}
           </a>
           {% else %}
           <!-- 로그인 전 -->

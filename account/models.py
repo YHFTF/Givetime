@@ -30,6 +30,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     skills = models.TextField(blank=True, null=True)  # 기술 목록
     services = models.TextField(blank=True, null=True)  # 서비스 목록
 
+    last_message_read_time = models.DateTimeField(null=True, blank=True)
+
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 

@@ -13,6 +13,17 @@ def _room_name(user1, user2):
 
 
 @login_required
+def chat_list(request):
+    rooms = ChatRoom.objects.filter(participants=request.user)
+    room_info = []
+    for room in rooms:
+        other = room.participants.exclude(id=request.user.id).first()
+        if other:
+            room_info.append({'room': room, 'user': other})
+    return render(request, 'chat/list.html', {'rooms': room_info})
+
+
+@login_required
 def room(request, nickname):
     other_user = get_object_or_404(User, nickname=nickname)
     room_name = _room_name(request.user, other_user)

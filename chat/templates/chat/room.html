@@ -4,12 +4,38 @@
 <head>
     <meta charset="utf-8">
     <title>Chat with {{ other_user.nickname }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #chat-log {
+            border: 1px solid #ccc;
+            height: 300px;
+            overflow-y: scroll;
+            padding: 10px;
+        }
+        .msg {
+            margin-bottom: 8px;
+        }
+        .msg.me {
+            text-align: right;
+        }
+        .timestamp {
+            font-size: 0.8em;
+            color: #999;
+            margin-left: 4px;
+        }
+    </style>
 </head>
 <body>
     <h2>{{ other_user.nickname }}님과의 채팅</h2>
-    <div id="chat-log" style="border:1px solid #ccc;height:300px;overflow-y:scroll;">
+    <div id="chat-log">
         {% for message in messages %}
-            <div><strong>{{ message.sender.nickname }}:</strong> {{ message.content }}</div>
+            <div class="msg{% if message.sender_id == request.user.id %} me{% endif %}">
+                <strong>{{ message.sender.nickname }}:</strong>
+                {{ message.content }}
+                <span class="timestamp">{{ message.timestamp|date:'Y-m-d H:i' }}</span>
+            </div>
         {% endfor %}
     </div>
     <input id="chat-message-input" type="text" autocomplete="off" placeholder="메시지 입력..."/>
@@ -18,16 +44,21 @@
     <script>
         var userId = {{ request.user.id }};
         var roomName = "{{ room_name }}";
+        var scheme = window.location.protocol === 'https:' ? 'wss' : 'ws';
         var chatSocket = new WebSocket(
-            'ws://' + window.location.host + '/ws/chat/' + roomName + '/'
+            scheme + '://' + window.location.host + '/ws/chat/' + roomName + '/'
         );
 
         chatSocket.onmessage = function(e) {
             var data = JSON.parse(e.data);
             var log = document.getElementById('chat-log');
             var div = document.createElement('div');
+            div.classList.add('msg');
+            if (data.sender_id == userId) div.classList.add('me');
             var sender = data.sender_id == userId ? '나' : '{{ other_user.nickname }}';
-            div.innerHTML = '<strong>' + sender + ':</strong> ' + data.message;
+            div.innerHTML = '<strong>' + sender + ':</strong> ' +
+                            data.message +
+                            ' <span class="timestamp">' + data.timestamp + '</span>';
             log.appendChild(div);
             log.scrollTop = log.scrollHeight;
         };
@@ -36,12 +67,25 @@
             console.error('Chat socket closed unexpectedly');
         };
 
-        document.getElementById('chat-message-submit').onclick = function(e) {
+        function sendMessage() {
             var input = document.getElementById('chat-message-input');
             var message = input.value;
-            if(message.trim() === '') return;
+            if (message.trim() === '') return;
             chatSocket.send(JSON.stringify({'message': message}));
             input.value = '';
+        }
+
+        document.getElementById('chat-message-submit').onclick = sendMessage;
+        document.getElementById('chat-message-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        window.onload = function() {
+            var log = document.getElementById('chat-log');
+            log.scrollTop = log.scrollHeight;
         };
     </script>
 </body>

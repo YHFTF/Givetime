@@ -24,7 +24,10 @@
             <p>✔️ 전문 / 시간 선택 가능</p>
           </div>
           <div class="image">
-            <img src="{% static 'main/images/givetalent.png' %}" alt="재능기부 이미지" />
+            <img
+              src="{% static 'main/images/givetalent.png' %}"
+              alt="재능기부 이미지"
+            />
           </div>
         </div>
         <div class="slide">
@@ -37,7 +40,10 @@
             <p>✔️ 누구나 쉽게 참여 가능</p>
           </div>
           <div class="image">
-            <img src="{% static 'main/images/warm-world.png' %}" alt="함께 기부 이미지" />
+            <img
+              src="{% static 'main/images/warm-world.png' %}"
+              alt="함께 기부 이미지"
+            />
           </div>
         </div>
       </div>
@@ -58,10 +64,14 @@
           <div class="card-body1">
             <div class="title">{{ post.title }}</div>
 
-             <div class="card-bottom">
-    <span class="date">작성일: {{ post.created_at|date:"Y-m-d H:i" }}</span>
-    <a href="/posts/donation/{{ post.id }}/" class="detail-link">상세보기</a>
-  </div>
+            <div class="card-bottom">
+              <span class="date"
+                >작성일: {{ post.created_at|date:"Y-m-d H:i" }}</span
+              >
+              <a href="/posts/donation/{{ post.id }}/" class="detail-link"
+                >상세보기</a
+              >
+            </div>
           </div>
         </div>
         {% empty %}
@@ -80,16 +90,22 @@
         <div class="card">
           <div class="card-top">
             <div class="category-info">
-              <div class="category-name">{{ post.category }}</div>
+              <div class="category-name">
+                {{ post.get_category_display|default:"따뜻한 이야기" }}
+              </div>
               <div class="category-location">{{ post.author.username }}</div>
             </div>
           </div>
           <div class="card-body2">
             <div class="title">{{ post.title }}</div>
             <div class="card-bottom">
-    <span class="date">작성일: {{ post.created_at|date:"Y-m-d H:i" }}</span>
-    <a href="/posts/donation/{{ post.id }}/" class="detail-link">상세보기</a>
-  </div>
+              <span class="date"
+                >작성일: {{ post.created_at|date:"Y-m-d H:i" }}</span
+              >
+              <a href="/posts/donation/{{ post.id }}/" class="detail-link"
+                >상세보기</a
+              >
+            </div>
           </div>
         </div>
         {% empty %}
@@ -98,6 +114,7 @@
       </div>
     </section>
     {% include 'main/footer.html' %}
-    <div id="popupMessage" class="popup-message" style="display: none;"></div> <!-- 팝업 메시지 -->
+    <div id="popupMessage" class="popup-message" style="display: none"></div>
+    <!-- 팝업 메시지 -->
   </body>
 </html>

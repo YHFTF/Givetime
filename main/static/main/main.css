@@ -166,7 +166,7 @@ section {
   border-bottom-left-radius: 24px;
   border-bottom-right-radius: 24px;
   flex: 1;
-   display: flex;
+  display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
@@ -180,7 +180,7 @@ section {
   border-bottom-left-radius: 24px;
   border-bottom-right-radius: 24px;
   flex: 1;
-   display: flex;
+  display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
@@ -193,11 +193,28 @@ section {
   text-align: text-align;
 }
 
+.card-bottom {
+  display: flex;
+  justify-content: space-between; /* 날짜 왼쪽, 버튼 오른쪽 정렬 */
+  align-items: center;
+}
+
 .detail-link {
-  text-align: right;
-  margin-top: 10px;
+  display: inline-block;
+  background-color: #b76e79;
+  color: #fff; /* 흰색 글씨 */
+  padding: 8px 16px;
+  border-radius: 8px;
   font-weight: bold;
-  cursor: pointer;
+  font-size: 0.8rem;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+  white-space: nowrap; /* ✅ 줄바꿈 방지 */
+  text-align: center;
+}
+
+.detail-link:hover {
+  background-color: #333;
 }
 .category-text {
   display: flex;

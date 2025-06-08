@@ -179,6 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
           document.getElementById("services-text").textContent = data.services;
           toggleEditMode(false);
           alert("프로필이 업데이트되었습니다!");
+          location.reload();
         } else {
           alert("업데이트 실패: " + result.error);
         }
@@ -198,35 +199,37 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // 수정 모드 토글 함수
-  function toggleEditMode(editing) {
-    isEditing = editing;
-    hasUnsavedChanges = false; // 모드 전환 시 초기화
+function toggleEditMode(editing) {
+  isEditing = editing;
+  hasUnsavedChanges = false;
 
-    const textElems = document.querySelectorAll("span[id$='-text']");
-    const inputElems = document.querySelectorAll("input[id$='-input'], textarea[id$='-input']");
+  const textElems = document.querySelectorAll("div[id$='-text'], span[id$='-text']");
+  const inputElems = document.querySelectorAll("input[id$='-input'], textarea[id$='-input']");
 
-    textElems.forEach((el) => {
-      el.style.display = editing ? "none" : "inline";
-    });
-    inputElems.forEach((el) => {
-      el.style.display = editing ? "inline" : "none";
-    });
+  textElems.forEach((el) => {
+    el.style.display = editing ? "none" : (el.tagName === "DIV" ? "block" : "inline");
+  });
 
-    editBtn.style.display = editing ? "none" : "inline-block";
-    saveBtn.style.display = editing ? "inline-block" : "none";
+  inputElems.forEach((el) => {
+    el.style.display = editing ? "block" : "none";
+  });
 
-    if (editing) {
-      profileImg.classList.add("editing");
-      profileImg.style.cursor = "pointer";
-      // 수정 모드 진입 시 경고 활성화
-      hasUnsavedChanges = true;
-    } else {
-      profileImg.classList.remove("editing");
-      profileImg.style.cursor = "default";
-      profileInput.value = "";
-      hasUnsavedChanges = false;
-    }
+  editBtn.style.display = editing ? "none" : "inline-block";
+  saveBtn.style.display = editing ? "inline-block" : "none";
+
+  if (editing) {
+    profileImg.classList.add("editing");
+    profileImg.style.cursor = "pointer";
+    hasUnsavedChanges = true;
+  } else {
+    profileImg.classList.remove("editing");
+    profileImg.style.cursor = "default";
+    profileInput.value = "";
+    hasUnsavedChanges = false;
   }
+}
+
+
 
   // CSRF 토큰 가져오는 함수 (Django용)
   function getCookie(name) {

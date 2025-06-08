@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap');
 
-body, input, textarea, button, select {
+body, input, textarea, select {
   font-family: 'Noto Sans KR', sans-serif;
 }
 
@@ -9,18 +9,4 @@ input[type="text"], input[type="email"], input[type="password"], input[type="num
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
-}
-
-button {
-  display: inline-block;
-  padding: 8px 16px;
-  background-color: #4caf50;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #45a049;
 }

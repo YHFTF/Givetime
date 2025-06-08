@@ -6,6 +6,21 @@ body {
   color: #222;
 }
 
+#search-btn {
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  margin-left: 8px;
+}
+
+#search-btn:hover {
+  background-color: #2980b9;
+}
+
 #petal-container {
   position: fixed;
   top: 0;
@@ -333,3 +348,8 @@ body {
   justify-content: space-between;
 }
 .chat-btn{display:inline-block;margin-top:10px;padding:6px 10px;background:#4caf50;color:white;text-decoration:none;border-radius:4px;}
+
+.button-group {
+  display: flex;
+  gap: 8px; /* 버튼 사이 간격 */
+}

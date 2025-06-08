@@ -28,10 +28,10 @@ document.addEventListener("DOMContentLoaded", () => {
   let intervalTime = 0;
   if (rankLevel === 2) {
     initial = 15;
-    intervalTime = 1500; // 중수는 1.5초 간격으로 꽃잎 생성
+    intervalTime = 800; // 중수는 0.8초 간격으로 꽃잎 생성
   } else if (rankLevel === 3) {
     initial = 30;
-    intervalTime = 800; // 고수는 0.8초 간격으로 꽃잎 생성
+    intervalTime = 50; // 고수는 0.05초 간격으로 꽃잎 생성
   }
   for (let i = 0; i < initial; i++) {
     createPetal();

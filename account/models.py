@@ -68,3 +68,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             return 2
         else:
             return 3
+
+    @property
+    def exp_to_next(self):
+        if self.exp < 100:
+            return 100 - self.exp
+        elif self.exp < 500:
+            return 500 - self.exp
+        else:
+            return 0

@@ -216,7 +216,7 @@ def complete_participation(request, post_id):
         post.author.save()
         Notification.objects.create(
             user=post.author,
-            message=f'{request.user.nickname}님이 참여를 완료했습니다.',
+            message=f'{request.user.nickname}님이 참여를 완료했습니다. EXP {rating}점이 적립되었습니다.',
             url=reverse('post_detail', args=['donation', post.id])
         )
         return redirect(reverse('post_detail', args=['donation', post.id]))

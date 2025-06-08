@@ -22,6 +22,8 @@ def my_page(request):
         'viewer_is_admin': user.isAdmin,
         'rank': user.rank,
         'rank_level': user.rank_level,
+        'exp': user.exp,
+        'exp_to_next': user.exp_to_next,
     }
     return render(request, 'mypage/mypage.html', context)
 
@@ -42,6 +44,8 @@ def view_profile(request, nickname):
         'viewer_is_admin': request.user.isAdmin,
         'rank': user_obj.rank,
         'rank_level': user_obj.rank_level,
+        'exp': user_obj.exp,
+        'exp_to_next': user_obj.exp_to_next,
     }
     return render(request, 'mypage/mypage.html', context)
 
@@ -68,6 +72,8 @@ def search_user(request):
                 'viewer_is_admin': request.user.isAdmin,
                 'rank': request.user.rank,
                 'rank_level': request.user.rank_level,
+                'exp': request.user.exp,
+                'exp_to_next': request.user.exp_to_next,
             })
     return redirect('mypage:my_page')
 

@@ -48,6 +48,34 @@
 
     <p>{{ post.content|linebreaks }}</p>
 
+    {% if post.post_type == 'donation' %}
+      <div class="participants">
+        <strong>참여자:</strong>
+        {% for p in post.participations.all %}
+          {% if p.user.profile_image %}
+            <img src="{{ p.user.profile_image.url }}" alt="참여자" class="profile-img-small" />
+          {% else %}
+            <img src="{% static 'images/default_profile.png' %}" alt="기본 프로필" class="profile-img-small" />
+          {% endif %}
+        {% empty %}
+          <span>아직 참여자가 없습니다.</span>
+        {% endfor %}
+      </div>
+      {% if user.is_authenticated %}
+        {% if user != post.author %}
+          {% if not post.participations.filter(user=user).exists %}
+            <a href="{% url 'participate' post.id %}">참여</a>
+          {% elif post.activity_started and not post.participations.get(user=user).is_completed %}
+            <a href="{% url 'complete_participation' post.id %}">참여완료</a>
+          {% endif %}
+        {% else %}
+          {% if not post.activity_started and post.participations.exists %}
+            <a href="{% url 'start_activity' post.id %}">활동 시작</a>
+          {% endif %}
+        {% endif %}
+      {% endif %}
+    {% endif %}
+
     {% if user == post.author %}
       <div class="post-actions">
         <a href="{% url 'post_update' post.post_type post.id %}" class="action-btn">수정</a>

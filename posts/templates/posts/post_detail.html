@@ -36,6 +36,9 @@
     {% if post.category %}
       <p><strong>카테고리:</strong> {{ post.get_category_display }}</p>
     {% endif %}
+    {% if post.address %}
+      <p><strong>위치:</strong> {{ post.address }}</p>
+    {% endif %}
 
     {% if post.image %}
       <img src="{{ post.image.url }}" alt="게시글 이미지" style="max-width: 500px; height: auto" />

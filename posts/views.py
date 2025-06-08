@@ -19,13 +19,16 @@ def post_list(request, post_type):
     if query:
         posts = posts.filter(title__icontains=query)  # 제목에 검색어 포함된 게시글만 필터
 
-    posts = posts.order_by('-created_at')
+    if post_type == 'announcement':
+        posts = posts.order_by('-is_fixed', '-created_at')
+        popular_posts = Post.objects.filter(post_type='announcement', is_fixed=True).order_by('-created_at')[:5]
+    else:
+        posts = posts.order_by('-created_at')
+        popular_posts = Post.objects.filter(post_type=post_type, views__gt=0).order_by('-views')[:5]
 
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-
-    popular_posts = Post.objects.filter(post_type=post_type, views__gt=0).order_by('-views')[:5]
 
     return render(request, 'posts/post_list.html', {
         'page_obj': page_obj,
@@ -62,7 +65,7 @@ def post_create(request, post_type):
         messages.warning(request, "로그인이 필요한 기능입니다.")
         return redirect(request.META.get('HTTP_REFERER', '/'))
 
-    if post_type == 'announcement' and not request.user.is_superuser:
+    if post_type == 'announcement' and not (getattr(request.user, 'isAdmin', False) or request.user.is_superuser):
         return render(request, '403.html')
 
     if request.method == 'POST':
@@ -77,6 +80,7 @@ def post_create(request, post_type):
             category=category,
             author=request.user,
             image=request.FILES.get('image'),
+            is_fixed=bool(request.POST.get('is_fixed')),
         )
         return redirect(reverse('post_list', args=[post_type]))
 
@@ -90,8 +94,12 @@ def post_update(request, post_type, post_id):
 
     post = get_object_or_404(Post, id=post_id, post_type=post_type)
 
-    if post.author != request.user and not request.user.is_superuser:
-        return render(request, '403.html')
+    if post.post_type == 'announcement':
+        if not (getattr(request.user, 'isAdmin', False) or request.user.is_superuser):
+            return render(request, '403.html')
+    else:
+        if post.author != request.user and not request.user.is_superuser:
+            return render(request, '403.html')
 
     if request.method == 'POST':
         post.title = request.POST.get('title')
@@ -107,6 +115,8 @@ def post_update(request, post_type, post_id):
         if request.FILES.get('image'):
             post.image = request.FILES.get('image')
 
+        if post_type == 'announcement':
+            post.is_fixed = bool(request.POST.get('is_fixed'))
         post.save()
         return redirect(reverse('post_detail', args=[post_type, post.id]))
 
@@ -125,7 +135,7 @@ def post_delete(request, post_type, post_id):
     post = get_object_or_404(Post, id=post_id, post_type=post_type)
 
     if post.post_type == 'announcement':
-        if not request.user.is_superuser:
+        if not (getattr(request.user, 'isAdmin', False) or request.user.is_superuser):
             return render(request, '403.html')
     else:
         if post.author != request.user:

@@ -1,0 +1,19 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>참여 완료</title>
+  <link rel="stylesheet" href="{% static 'posts/detail.css' %}">
+</head>
+<body>
+  <div class="content-wrapper">
+    <h3>평가 점수를 입력하세요 (1~5)</h3>
+    <form method="post">
+      {% csrf_token %}
+      <input type="number" name="rating" min="1" max="5" value="5">
+      <button type="submit">제출</button>
+    </form>
+  </div>
+</body>
+</html>

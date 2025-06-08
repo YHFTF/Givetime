@@ -4,7 +4,8 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 from django.urls import reverse
 
-from .models import Post, Comment
+from .models import Post, Comment, Participation
+from notifications.models import Notification
 
 VALID_POST_TYPES = ['donation', 'request', 'story', 'announcement']
 
@@ -174,3 +175,49 @@ def delete_comment(request, post_type, post_id, comment_id):
         comment.delete()
 
     return redirect(reverse('post_detail', args=[post_type, post_id]))
+
+
+@login_required
+def participate(request, post_id):
+    post = get_object_or_404(Post, id=post_id, post_type='donation')
+    Participation.objects.get_or_create(post=post, user=request.user)
+    Notification.objects.create(
+        user=post.author,
+        message=f'{request.user.nickname}님이 참여했습니다.',
+        url=reverse('post_detail', args=['donation', post.id])
+    )
+    return redirect(reverse('post_detail', args=['donation', post.id]))
+
+
+@login_required
+def start_activity(request, post_id):
+    post = get_object_or_404(Post, id=post_id, post_type='donation', author=request.user)
+    post.activity_started = True
+    post.save()
+    for p in post.participations.all():
+        Notification.objects.create(
+            user=p.user,
+            message=f'{post.author.nickname}님이 활동을 시작했습니다.',
+            url=reverse('post_detail', args=['donation', post.id])
+        )
+    return redirect(reverse('post_detail', args=['donation', post.id]))
+
+
+@login_required
+def complete_participation(request, post_id):
+    post = get_object_or_404(Post, id=post_id, post_type='donation')
+    part = get_object_or_404(Participation, post=post, user=request.user)
+    if request.method == 'POST':
+        rating = int(request.POST.get('rating', 5))
+        part.rating = rating
+        part.is_completed = True
+        part.save()
+        post.author.exp += rating
+        post.author.save()
+        Notification.objects.create(
+            user=post.author,
+            message=f'{request.user.nickname}님이 참여를 완료했습니다.',
+            url=reverse('post_detail', args=['donation', post.id])
+        )
+        return redirect(reverse('post_detail', args=['donation', post.id]))
+    return render(request, 'posts/complete_modal.html', {'post': post})

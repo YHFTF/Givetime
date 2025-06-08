@@ -11,6 +11,7 @@ urlpatterns = [
     path('mypage/', include('mypage.urls')),
     path('account/', include('account.urls')),
     path('chat/', include('chat.urls')),
+    path('notifications/', include('notifications.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
 
 if settings.DEBUG:

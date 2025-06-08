@@ -333,6 +333,12 @@
             <span style="color:red;font-weight:bold;position:absolute;top:-5px;right:-10px;">!</span>
             {% endif %}
           </a>
+          <a href="{% url 'notifications:list' %}" style="position: relative; display:inline-block;">
+            <span style="font-size: 1.2em">🔔</span> 알림
+            {% if unread_notifications %}
+            <span style="color:red;font-weight:bold;position:absolute;top:-5px;right:-10px;">{{ unread_notifications }}</span>
+            {% endif %}
+          </a>
           {% else %}
           <!-- 로그인 전 -->
           <a href="#" onclick="openLoginModal()">⭐로그인</a>

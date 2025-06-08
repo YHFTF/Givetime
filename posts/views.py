@@ -234,12 +234,21 @@ def complete_participation(request, post_id):
     post = get_object_or_404(Post, id=post_id, post_type='donation')
     part = get_object_or_404(Participation, post=post, user=request.user)
     if request.method == 'POST':
-        rating = int(request.POST.get('rating', 5))
+        # 여러 항목 점수 받아오기
+        r1 = int(request.POST.get('rating_kindness', 0))
+        r2 = int(request.POST.get('rating_punctuality', 0))
+        r3 = int(request.POST.get('rating_satisfaction', 0))
+        r4 = int(request.POST.get('rating_professionalism', 0))
+
+        rating = r1 + r2 + r3 + r4  # 총합
+
         part.rating = rating
         part.is_completed = True
         part.save()
+
         post.author.exp += rating
         post.author.save()
+
         Notification.objects.create(
             user=post.author,
             message=f'{request.user.nickname}님이 참여를 완료했습니다. EXP {rating}점이 적립되었습니다.',

@@ -11,10 +11,23 @@
   <div class="content-wrapper">
     <h3>평가 점수를 입력하세요 (1~5)</h3>
     <form method="post">
-      {% csrf_token %}
-      <input type="number" name="rating" min="1" max="5" value="5">
-      <button type="submit">제출</button>
-    </form>
+    {% csrf_token %}
+    <h3>아래 항목에 대해 1~5점으로 평가해주세요.</h3>
+
+    <label>친절도:</label>
+    <input type="number" name="rating_kindness" min="1" max="5" value="5"><br>
+
+    <label>시간 준수:</label>
+    <input type="number" name="rating_punctuality" min="1" max="5" value="5"><br>
+
+    <label>만족도:</label>
+    <input type="number" name="rating_satisfaction" min="1" max="5" value="5"><br>
+
+    <label>전문성:</label>
+    <input type="number" name="rating_professionalism" min="1" max="5" value="5"><br>
+
+    <button type="submit">제출</button>
+  </form>
   </div>
 </body>
 </html>

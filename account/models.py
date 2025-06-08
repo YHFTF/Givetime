@@ -32,6 +32,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     last_message_read_time = models.DateTimeField(null=True, blank=True)
 
+    # 관리자가 공지사항을 작성할 수 있는지 여부
+    isAdmin = models.BooleanField(default=False)
+
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 

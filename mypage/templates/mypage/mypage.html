@@ -53,6 +53,11 @@
           {% if is_owner %}
           <button id="edit-btn">프로필 수정</button>
           <button id="save-btn" style="display: none">저장</button>
+          {% if not isAdmin %}
+          <button id="admin-btn">관리자 등록</button>
+          {% else %}
+          <span class="admin-label">관리자 계정</span>
+          {% endif %}
           {% endif %}
         </div>
         <!--사용자 검색 버튼-->

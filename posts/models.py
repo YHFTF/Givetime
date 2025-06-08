@@ -26,6 +26,9 @@ class Post(models.Model):
     views = models.PositiveIntegerField(default=0)
     image = models.ImageField(upload_to='post_images/', null=True, blank=True)
 
+    # 공지사항에서 상단 고정 여부
+    is_fixed = models.BooleanField(default=False)
+
     def __str__(self):
         return f"[{self.get_post_type_display()}] {self.title}"
 

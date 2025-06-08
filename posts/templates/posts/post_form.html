@@ -4,8 +4,11 @@
   <head>
     <meta charset="UTF-8" />
     <title>{{ post_type|title }} 게시글 작성</title>
+    <link rel="stylesheet" href="{% static 'posts/form.css' %}" />
   </head>
   <body>
+    <div id="header">{% include 'main/header.html' %}</div>
+    <div class="form-container">
     <h2>
       {% if post_type == 'donation' %}재능기부 글 작성 
       {% elif post_type == 'request' %}재능요청 글 작성 
@@ -34,7 +37,7 @@
   </select><br><br>
   {% endif %}
 
-  <label for="image">새 이미지 업로드:</label><br />
+  <label for="image">새 이미지 업로드:</label>
   <input type="file" id="image" name="image"><br><br>
   {% if post.image %}
     <p>현재 이미지:</p>
@@ -44,9 +47,14 @@
     <br>
   {% endif %}
 
+  {% if post_type == 'announcement' %}
+  <label><input type="checkbox" name="is_fixed" {% if post.is_fixed %}checked{% endif %}> 상단 고정</label><br><br>
+  {% endif %}
+
 
   <button type="submit">{% if mode == 'update' %}수정 완료{% else %}등록{% endif %}</button>
   <div id="footer">{% include 'main/footer.html' %}</div>
 </form>
+    </div>
 </body>
 </html>

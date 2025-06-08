@@ -18,6 +18,7 @@ def my_page(request):
         'services': user.services or '서비스를 입력해주세요!',
         'profile_image': user.profile_image.url if user.profile_image else None,
         'is_owner': True,
+        'isAdmin': user.isAdmin,
     }
     return render(request, 'mypage/mypage.html', context)
 
@@ -34,6 +35,7 @@ def view_profile(request, nickname):
         'services': user_obj.services or '서비스를 입력해주세요!',
         'profile_image': user_obj.profile_image.url if user_obj.profile_image else None,
         'is_owner': (request.user.id == user_obj.id),
+        'isAdmin': user_obj.isAdmin,
     }
     return render(request, 'mypage/mypage.html', context)
 
@@ -89,4 +91,18 @@ def update_profile(request, user_id):
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
 
+    return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)
+
+
+@login_required
+def register_admin(request):
+    if request.method == 'POST':
+        password = request.POST.get('password')
+        if password == '0000':
+            user = request.user
+            user.isAdmin = True
+            user.save()
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'error': '비밀번호가 올바르지 않습니다.'}, status=400)
     return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)

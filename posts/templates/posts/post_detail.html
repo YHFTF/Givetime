@@ -62,19 +62,20 @@
         {% endfor %}
       </div>
       {% if user.is_authenticated %}
-        {% if user != post.author %}
-          {% if not post.participations.filter(user=user).exists %}
+        {% if not is_author %}
+          {% if not participated %}
             <a href="{% url 'participate' post.id %}">참여</a>
-          {% elif post.activity_started and not post.participations.get(user=user).is_completed %}
+          {% elif post.activity_started and not participation_complete %}
             <a href="{% url 'complete_participation' post.id %}">참여완료</a>
           {% endif %}
         {% else %}
-          {% if not post.activity_started and post.participations.exists %}
+          {% if can_start_activity %}
             <a href="{% url 'start_activity' post.id %}">활동 시작</a>
           {% endif %}
         {% endif %}
       {% endif %}
     {% endif %}
+
 
     {% if user == post.author %}
       <div class="post-actions">

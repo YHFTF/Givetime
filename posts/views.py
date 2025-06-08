@@ -51,10 +51,36 @@ def post_detail(request, post_type, post_id):
         post.save()
         request.session[session_key] = True
 
+    user = request.user
+    participated = False
+    participation_complete = False
+    is_author = False
+    has_participants = False
+    can_start_activity = False
+
+    if user.is_authenticated:
+        is_author = user == post.author
+        participation_qs = post.participations.filter(user=user)
+        participated = participation_qs.exists()
+
+        if participated:
+            participation = participation_qs.first()
+            participation_complete = participation.is_completed
+
+        has_participants = post.participations.exists()
+        can_start_activity = (not post.activity_started) and has_participants and is_author
+
     return render(request, 'posts/post_detail.html', {
         'post': post,
         'post_type': post_type,
+        'participated': participated,
+        'participation_complete': participation_complete,
+        'is_author': is_author,
+        'has_participants': has_participants,
+        'can_start_activity': can_start_activity,
     })
+
+
 
 # 게시글 작성
 @login_required

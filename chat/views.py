@@ -15,15 +15,31 @@ def _room_name(user1, user2):
 
 @login_required
 def chat_list(request):
+    search_query = request.GET.get('q')
     rooms = ChatRoom.objects.filter(participants=request.user)
     room_info = []
     for room in rooms:
         other = room.participants.exclude(id=request.user.id).first()
         if other:
             room_info.append({'room': room, 'user': other})
+
+    search_results = None
+    if search_query:
+        search_results = (
+            User.objects.filter(nickname__icontains=search_query)
+            .exclude(id=request.user.id)
+        )
+
     request.user.last_message_read_time = timezone.now()
     request.user.save(update_fields=['last_message_read_time'])
-    return render(request, 'chat/list.html', {'rooms': room_info})
+
+    context = {
+        'rooms': room_info,
+        'search_results': search_results,
+        'query': search_query,
+    }
+
+    return render(request, 'chat/list.html', context)
 
 
 @login_required

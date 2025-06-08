@@ -5,16 +5,31 @@
     <meta charset="UTF-8">
     <title>채팅 목록</title>
     <link rel="stylesheet" href="{% static 'main/main.css' %}">
-    <style>
-        .chat-list { max-width: 600px; margin: 40px auto; }
-        .chat-item { padding: 10px; border-bottom: 1px solid #ddd; }
-        .chat-item a { text-decoration: none; color: inherit; display:block; }
-    </style>
+    <link rel="stylesheet" href="{% static 'chat/chat.css' %}">
 </head>
 <body>
     <div id="header">{% include 'main/header.html' %}</div>
     <div class="chat-list">
         <h2>채팅 목록</h2>
+
+        <form method="get" action="" class="search-bar">
+            <input type="text" name="q" placeholder="닉네임 검색" value="{{ query|default:'' }}" />
+            <button type="submit">검색</button>
+        </form>
+
+        {% if search_results %}
+            <div class="search-results">
+                <h3>검색 결과</h3>
+                {% for user in search_results %}
+                    <div class="chat-item">
+                        <a href="{% url 'chat:room' user.nickname %}">{{ user.nickname }}님과 채팅하기</a>
+                    </div>
+                {% empty %}
+                    <p>일치하는 사용자가 없습니다.</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         {% for info in rooms %}
             <div class="chat-item">
                 <a href="{% url 'chat:room' info.user.nickname %}">

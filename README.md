@@ -37,8 +37,12 @@ python manage.py runserver
 daphne -p 8001 Givetime.asgi:application
 ```
 
-> 실시간 채팅 등 **웹소켓 기능**은 `daphne` 서버를 통해 처리됩니다.  
+> 실시간 채팅 등 **웹소켓 기능**은 `daphne` 서버를 통해 처리됩니다.
 > 프론트엔드에서는 `ws://localhost:8001/...` 주소로 연결됩니다.
+
+### 5. 채팅 기능 사용 팁
+
+- 채팅 목록 화면에서 닉네임을 검색해 원하는 사용자와 대화를 시작할 수 있습니다.
 
 ---
 

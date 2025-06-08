@@ -25,13 +25,19 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   let initial = 0;
-  if (rankLevel === 2) initial = 15;
-  else if (rankLevel === 3) initial = 30;
+  let intervalTime = 0;
+  if (rankLevel === 2) {
+    initial = 15;
+    intervalTime = 1500; // 중수는 1.5초 간격으로 꽃잎 생성
+  } else if (rankLevel === 3) {
+    initial = 30;
+    intervalTime = 800; // 고수는 0.8초 간격으로 꽃잎 생성
+  }
   for (let i = 0; i < initial; i++) {
     createPetal();
   }
   if (rankLevel > 1) {
-    setInterval(createPetal, 1000);
+    setInterval(createPetal, intervalTime);
   }
 
   // 프로필 이미지 클릭: 수정 모드일 때만 파일 선택창 열기

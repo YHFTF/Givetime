@@ -2,6 +2,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const editBtn = document.getElementById("edit-btn");
   const saveBtn = document.getElementById("save-btn");
   const adminBtn = document.getElementById("admin-btn");
+  const adminPanelBtn = document.getElementById("admin-panel-btn");
+  const adminPanelModal = document.getElementById("admin-panel-modal");
+  const closeAdminPanel = document.getElementById("close-admin-panel");
+  const adminExpForm = document.getElementById("admin-exp-form");
   const profileImg = document.getElementById("profile-img");
   const profileInput = document.getElementById("profile-image-input");
   let isEditing = false;
@@ -75,6 +79,45 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         })
         .catch((err) => console.error("관리자 등록 오류:", err));
+    });
+  }
+
+  if (adminPanelBtn) {
+    adminPanelBtn.addEventListener("click", () => {
+      adminPanelModal.style.display = "flex";
+    });
+  }
+
+  if (closeAdminPanel) {
+    closeAdminPanel.addEventListener("click", () => {
+      adminPanelModal.style.display = "none";
+    });
+  }
+
+  if (adminExpForm) {
+    adminExpForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const nickname = document.getElementById("target-nickname").value;
+      const exp = document.getElementById("target-exp").value;
+      const formData = new FormData();
+      formData.append("nickname", nickname);
+      formData.append("exp", exp);
+
+      fetch(`/mypage/admin/set-exp/`, {
+        method: "POST",
+        headers: { "X-CSRFToken": getCookie("csrftoken") },
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((result) => {
+          if (result.success) {
+            alert("EXP가 업데이트되었습니다.");
+            adminPanelModal.style.display = "none";
+          } else {
+            alert(result.error || "실패");
+          }
+        })
+        .catch((err) => console.error("EXP 업데이트 오류:", err));
     });
   }
 

@@ -25,6 +25,12 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     views = models.PositiveIntegerField(default=0)
     image = models.ImageField(upload_to='post_images/', null=True, blank=True)
+    # 사용자가 선택한 위치 정보 (시/동 단위)
+    address = models.CharField(max_length=100, blank=True, null=True)
+
+    # 공지사항에서 상단 고정 여부
+    is_fixed = models.BooleanField(default=False)
+    activity_started = models.BooleanField(default=False)
 
     def __str__(self):
         return f"[{self.get_post_type_display()}] {self.title}"
@@ -37,3 +43,16 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.author.nickname} on {self.post.title}"
+
+
+class Participation(models.Model):
+    post = models.ForeignKey(Post, related_name='participations', on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    is_completed = models.BooleanField(default=False)
+    rating = models.PositiveSmallIntegerField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ('post', 'user')
+
+    def __str__(self):
+        return f"{self.user.nickname} participates in {self.post.title}"

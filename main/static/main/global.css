@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap');
+
+body, input, textarea, select {
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}

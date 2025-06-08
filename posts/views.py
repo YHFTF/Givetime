@@ -4,7 +4,8 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 from django.urls import reverse
 
-from .models import Post, Comment
+from .models import Post, Comment, Participation
+from notifications.models import Notification
 
 VALID_POST_TYPES = ['donation', 'request', 'story', 'announcement']
 
@@ -19,13 +20,16 @@ def post_list(request, post_type):
     if query:
         posts = posts.filter(title__icontains=query)  # 제목에 검색어 포함된 게시글만 필터
 
-    posts = posts.order_by('-created_at')
+    if post_type == 'announcement':
+        posts = posts.order_by('-is_fixed', '-created_at')
+        popular_posts = Post.objects.filter(post_type='announcement', is_fixed=True).order_by('-created_at')[:5]
+    else:
+        posts = posts.order_by('-created_at')
+        popular_posts = Post.objects.filter(post_type=post_type, views__gt=0).order_by('-views')[:5]
 
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-
-    popular_posts = Post.objects.filter(post_type=post_type, views__gt=0).order_by('-views')[:5]
 
     return render(request, 'posts/post_list.html', {
         'page_obj': page_obj,
@@ -47,10 +51,36 @@ def post_detail(request, post_type, post_id):
         post.save()
         request.session[session_key] = True
 
+    user = request.user
+    participated = False
+    participation_complete = False
+    is_author = False
+    has_participants = False
+    can_start_activity = False
+
+    if user.is_authenticated:
+        is_author = user == post.author
+        participation_qs = post.participations.filter(user=user)
+        participated = participation_qs.exists()
+
+        if participated:
+            participation = participation_qs.first()
+            participation_complete = participation.is_completed
+
+        has_participants = post.participations.exists()
+        can_start_activity = (not post.activity_started) and has_participants and is_author
+
     return render(request, 'posts/post_detail.html', {
         'post': post,
         'post_type': post_type,
+        'participated': participated,
+        'participation_complete': participation_complete,
+        'is_author': is_author,
+        'has_participants': has_participants,
+        'can_start_activity': can_start_activity,
     })
+
+
 
 # 게시글 작성
 @login_required
@@ -62,13 +92,14 @@ def post_create(request, post_type):
         messages.warning(request, "로그인이 필요한 기능입니다.")
         return redirect(request.META.get('HTTP_REFERER', '/'))
 
-    if post_type == 'announcement' and not request.user.is_superuser:
+    if post_type == 'announcement' and not (getattr(request.user, 'isAdmin', False) or request.user.is_superuser):
         return render(request, '403.html')
 
     if request.method == 'POST':
         title = request.POST.get('title')
         content = request.POST.get('content')
         category = request.POST.get('category') if post_type in ['donation', 'request'] else None
+        address = request.POST.get('address')
 
         Post.objects.create(
             title=title,
@@ -77,6 +108,8 @@ def post_create(request, post_type):
             category=category,
             author=request.user,
             image=request.FILES.get('image'),
+            address=address,
+            is_fixed=bool(request.POST.get('is_fixed')),
         )
         return redirect(reverse('post_list', args=[post_type]))
 
@@ -90,12 +123,17 @@ def post_update(request, post_type, post_id):
 
     post = get_object_or_404(Post, id=post_id, post_type=post_type)
 
-    if post.author != request.user and not request.user.is_superuser:
-        return render(request, '403.html')
+    if post.post_type == 'announcement':
+        if not (getattr(request.user, 'isAdmin', False) or request.user.is_superuser):
+            return render(request, '403.html')
+    else:
+        if post.author != request.user and not request.user.is_superuser:
+            return render(request, '403.html')
 
     if request.method == 'POST':
         post.title = request.POST.get('title')
         post.content = request.POST.get('content')
+        post.address = request.POST.get('address')
 
         if post_type in ['donation', 'request']:
             post.category = request.POST.get('category')
@@ -107,6 +145,8 @@ def post_update(request, post_type, post_id):
         if request.FILES.get('image'):
             post.image = request.FILES.get('image')
 
+        if post_type == 'announcement':
+            post.is_fixed = bool(request.POST.get('is_fixed'))
         post.save()
         return redirect(reverse('post_detail', args=[post_type, post.id]))
 
@@ -125,7 +165,7 @@ def post_delete(request, post_type, post_id):
     post = get_object_or_404(Post, id=post_id, post_type=post_type)
 
     if post.post_type == 'announcement':
-        if not request.user.is_superuser:
+        if not (getattr(request.user, 'isAdmin', False) or request.user.is_superuser):
             return render(request, '403.html')
     else:
         if post.author != request.user:
@@ -161,3 +201,49 @@ def delete_comment(request, post_type, post_id, comment_id):
         comment.delete()
 
     return redirect(reverse('post_detail', args=[post_type, post_id]))
+
+
+@login_required
+def participate(request, post_id):
+    post = get_object_or_404(Post, id=post_id, post_type='donation')
+    Participation.objects.get_or_create(post=post, user=request.user)
+    Notification.objects.create(
+        user=post.author,
+        message=f'{request.user.nickname}님이 참여했습니다.',
+        url=reverse('post_detail', args=['donation', post.id])
+    )
+    return redirect(reverse('post_detail', args=['donation', post.id]))
+
+
+@login_required
+def start_activity(request, post_id):
+    post = get_object_or_404(Post, id=post_id, post_type='donation', author=request.user)
+    post.activity_started = True
+    post.save()
+    for p in post.participations.all():
+        Notification.objects.create(
+            user=p.user,
+            message=f'{post.author.nickname}님이 활동을 시작했습니다.',
+            url=reverse('post_detail', args=['donation', post.id])
+        )
+    return redirect(reverse('post_detail', args=['donation', post.id]))
+
+
+@login_required
+def complete_participation(request, post_id):
+    post = get_object_or_404(Post, id=post_id, post_type='donation')
+    part = get_object_or_404(Participation, post=post, user=request.user)
+    if request.method == 'POST':
+        rating = int(request.POST.get('rating', 5))
+        part.rating = rating
+        part.is_completed = True
+        part.save()
+        post.author.exp += rating
+        post.author.save()
+        Notification.objects.create(
+            user=post.author,
+            message=f'{request.user.nickname}님이 참여를 완료했습니다. EXP {rating}점이 적립되었습니다.',
+            url=reverse('post_detail', args=['donation', post.id])
+        )
+        return redirect(reverse('post_detail', args=['donation', post.id]))
+    return render(request, 'posts/complete_modal.html', {'post': post})

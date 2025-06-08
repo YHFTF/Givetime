@@ -18,6 +18,12 @@ def my_page(request):
         'services': user.services or '서비스를 입력해주세요!',
         'profile_image': user.profile_image.url if user.profile_image else None,
         'is_owner': True,
+        'isAdmin': user.isAdmin,
+        'viewer_is_admin': user.isAdmin,
+        'rank': user.rank,
+        'rank_level': user.rank_level,
+        'exp': user.exp,
+        'exp_to_next': user.exp_to_next,
     }
     return render(request, 'mypage/mypage.html', context)
 
@@ -34,6 +40,12 @@ def view_profile(request, nickname):
         'services': user_obj.services or '서비스를 입력해주세요!',
         'profile_image': user_obj.profile_image.url if user_obj.profile_image else None,
         'is_owner': (request.user.id == user_obj.id),
+        'isAdmin': user_obj.isAdmin,
+        'viewer_is_admin': request.user.isAdmin,
+        'rank': user_obj.rank,
+        'rank_level': user_obj.rank_level,
+        'exp': user_obj.exp,
+        'exp_to_next': user_obj.exp_to_next,
     }
     return render(request, 'mypage/mypage.html', context)
 
@@ -56,7 +68,12 @@ def search_user(request):
                 'services': request.user.services or '서비스를 입력해주세요!',
                 'profile_image': request.user.profile_image.url if request.user.profile_image else None,
                 'is_owner': True,
-                'error': '존재하지 않는 사용자입니다.'
+                'error': '존재하지 않는 사용자입니다.',
+                'viewer_is_admin': request.user.isAdmin,
+                'rank': request.user.rank,
+                'rank_level': request.user.rank_level,
+                'exp': request.user.exp,
+                'exp_to_next': request.user.exp_to_next,
             })
     return redirect('mypage:my_page')
 
@@ -89,4 +106,41 @@ def update_profile(request, user_id):
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
 
+    return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)
+
+
+@login_required
+def register_admin(request):
+    if request.method == 'POST':
+        password = request.POST.get('password')
+        if password == '0000':
+            user = request.user
+            user.isAdmin = True
+            user.save()
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'error': '비밀번호가 올바르지 않습니다.'}, status=400)
+    return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)
+
+
+@login_required
+def set_user_exp(request):
+    if not request.user.isAdmin:
+        return JsonResponse({'success': False, 'error': '권한이 없습니다.'}, status=403)
+
+    if request.method == 'POST':
+        nickname = request.POST.get('nickname')
+        exp = request.POST.get('exp')
+        try:
+            exp_value = int(exp)
+        except (TypeError, ValueError):
+            return JsonResponse({'success': False, 'error': '잘못된 EXP 값입니다.'}, status=400)
+
+        try:
+            target = CustomUser.objects.get(nickname=nickname)
+            target.exp = exp_value
+            target.save()
+            return JsonResponse({'success': True, 'nickname': target.nickname, 'exp': target.exp})
+        except CustomUser.DoesNotExist:
+            return JsonResponse({'success': False, 'error': '사용자를 찾을 수 없습니다.'}, status=404)
     return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)

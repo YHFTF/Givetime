@@ -1,7 +1,7 @@
 body {
   margin: 0;
-  font-family: "Arial", sans-serif;
-  background-color: #fff;
+  font-family: "Noto Sans KR", sans-serif;
+  background-color: #f5f7fa; /* 부드러운 배경색 */
 }
 
 header {
@@ -27,7 +27,10 @@ nav a {
 .container {
   display: flex;
   justify-content: space-between;
-  padding: 40px;
+  max-width: 1200px;            /* 넉넉한 너비 */
+  margin: 40px auto;            /* 중앙 정렬 */
+  gap: 40px;
+  padding: 0 40px;
 }
 
 .main {
@@ -63,8 +66,16 @@ h1 {
 }
 
 .card {
-  border-bottom: 1px solid #eee;
-  padding: 15px 0;
+  background-color: #fff;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
 }
 
 .card a {
@@ -110,10 +121,10 @@ h1 {
 
 .sidebar {
   flex: 1;
-  margin-left: 40px;
-  background-color: #eee;
+  background-color: #fff;
   border-radius: 10px;
   padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .sidebar a {
@@ -132,11 +143,11 @@ h1 {
 }
 
 .sidebar-card {
-  background-color: #f0f0f0;
+  background-color: #f9f9f9;
   padding: 12px 14px;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  border-bottom: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .sidebar-card-meta {

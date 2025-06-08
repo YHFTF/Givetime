@@ -5,37 +5,12 @@
     <meta charset="utf-8">
     <title>{{ other_user.nickname }}님과의 채팅</title>
     <link rel="stylesheet" href="{% static 'main/main.css' %}">
-    <style>
-        body { font-family: Arial, sans-serif; }
-        #chat-log {
-            border: 1px solid #ccc;
-            height: 300px;
-            overflow-y: scroll;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-        }
-        .bubble {
-            max-width: 70%;
-            padding: 8px 12px;
-            margin: 4px 0;
-            border-radius: 12px;
-            position: relative;
-        }
-        .me { align-self: flex-end; background: #dcf8c6; }
-        .other { align-self: flex-start; background: #fff; border: 1px solid #ccc; }
-        .timestamp {
-            font-size: 0.75em;
-            color: #666;
-            display: block;
-            margin-top: 2px;
-            text-align: right;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'main/global.css' %}">
+    <link rel="stylesheet" href="{% static 'chat/chat.css' %}">
 </head>
 <body>
     <div id="header">{% include 'main/header.html' %}</div>
-    <div class="chat-container" style="max-width:600px;margin:20px auto;">
+    <div class="chat-container">
         <h2>{{ other_user.nickname }}님과의 채팅</h2>
         <div id="chat-log">
             {% for message in messages %}
@@ -45,8 +20,8 @@
                 </div>
             {% endfor %}
         </div>
-        <div style="margin-top:10px;display:flex;gap:5px;">
-            <input id="chat-message-input" type="text" style="flex:1;" autocomplete="off" placeholder="메시지 입력..."/>
+        <div class="input-row">
+            <input id="chat-message-input" type="text" autocomplete="off" placeholder="메시지 입력..."/>
             <button id="chat-message-submit">보내기</button>
         </div>
     </div>

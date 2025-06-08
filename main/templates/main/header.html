@@ -4,6 +4,7 @@
   <head>
     <meta name="csrf-token" content="{{ csrf_token }}" />
     <meta name="logout-url" content="{% url 'account:logout' %}" />
+    <link rel="stylesheet" href="{% static 'main/global.css' %}">
     <style>
       header {
         display: flex;
@@ -331,6 +332,12 @@
             <span style="font-size: 1.2em">💬</span> 채팅
             {% if has_unread_messages %}
             <span style="color:red;font-weight:bold;position:absolute;top:-5px;right:-10px;">!</span>
+            {% endif %}
+          </a>
+          <a href="{% url 'notifications:list' %}" style="position: relative; display:inline-block;">
+            <span style="font-size: 1.2em">🔔</span> 알림
+            {% if unread_notifications %}
+            <span style="color:red;font-weight:bold;position:absolute;top:-5px;right:-10px;">{{ unread_notifications }}</span>
             {% endif %}
           </a>
           {% else %}

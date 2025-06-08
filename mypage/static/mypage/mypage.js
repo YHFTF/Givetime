@@ -1,10 +1,44 @@
 document.addEventListener("DOMContentLoaded", () => {
   const editBtn = document.getElementById("edit-btn");
   const saveBtn = document.getElementById("save-btn");
+  const adminBtn = document.getElementById("admin-btn");
+  const adminPanelBtn = document.getElementById("admin-panel-btn");
+  const adminPanelModal = document.getElementById("admin-panel-modal");
+  const closeAdminPanel = document.getElementById("close-admin-panel");
+  const adminExpForm = document.getElementById("admin-exp-form");
   const profileImg = document.getElementById("profile-img");
   const profileInput = document.getElementById("profile-image-input");
   let isEditing = false;
   let hasUnsavedChanges = false;
+
+  const rankLevel = parseInt(document.body.dataset.rankLevel || "1");
+  const petalContainer = document.getElementById("petal-container");
+
+  function createPetal() {
+    const petal = document.createElement("div");
+    petal.className = "petal";
+    petal.style.left = Math.random() * 100 + "vw";
+    const duration = 5 + Math.random() * 5;
+    petal.style.animationDuration = duration + "s";
+    petalContainer.appendChild(petal);
+    setTimeout(() => petal.remove(), duration * 1000);
+  }
+
+  let initial = 0;
+  let intervalTime = 0;
+  if (rankLevel === 2) {
+    initial = 15;
+    intervalTime = 800; // 중수는 0.8초 간격으로 꽃잎 생성
+  } else if (rankLevel === 3) {
+    initial = 30;
+    intervalTime = 50; // 고수는 0.05초 간격으로 꽃잎 생성
+  }
+  for (let i = 0; i < initial; i++) {
+    createPetal();
+  }
+  if (rankLevel > 1) {
+    setInterval(createPetal, intervalTime);
+  }
 
   // 프로필 이미지 클릭: 수정 모드일 때만 파일 선택창 열기
   profileImg.addEventListener("click", () => {
@@ -29,6 +63,69 @@ document.addEventListener("DOMContentLoaded", () => {
   editBtn.addEventListener("click", () => {
     toggleEditMode(true);
   });
+
+  if (adminBtn) {
+    adminBtn.addEventListener("click", () => {
+      const pwd = prompt("관리자 비밀번호를 입력하세요:");
+      if (pwd === null) return;
+      const formData = new FormData();
+      formData.append("password", pwd);
+      fetch(`/mypage/register-admin/`, {
+        method: "POST",
+        headers: { "X-CSRFToken": getCookie("csrftoken") },
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((result) => {
+          if (result.success) {
+            alert("관리자로 등록되었습니다.");
+            location.reload();
+          } else {
+            alert(result.error || "등록 실패");
+          }
+        })
+        .catch((err) => console.error("관리자 등록 오류:", err));
+    });
+  }
+
+  if (adminPanelBtn) {
+    adminPanelBtn.addEventListener("click", () => {
+      adminPanelModal.style.display = "flex";
+    });
+  }
+
+  if (closeAdminPanel) {
+    closeAdminPanel.addEventListener("click", () => {
+      adminPanelModal.style.display = "none";
+    });
+  }
+
+  if (adminExpForm) {
+    adminExpForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const nickname = document.getElementById("target-nickname").value;
+      const exp = document.getElementById("target-exp").value;
+      const formData = new FormData();
+      formData.append("nickname", nickname);
+      formData.append("exp", exp);
+
+      fetch(`/mypage/admin/set-exp/`, {
+        method: "POST",
+        headers: { "X-CSRFToken": getCookie("csrftoken") },
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((result) => {
+          if (result.success) {
+            alert("EXP가 업데이트되었습니다.");
+            adminPanelModal.style.display = "none";
+          } else {
+            alert(result.error || "실패");
+          }
+        })
+        .catch((err) => console.error("EXP 업데이트 오류:", err));
+    });
+  }
 
   // 필드 변경 시 unsaved flag 설정
   const inputs = document.querySelectorAll("input[id$='-input'], textarea[id$='-input']");
@@ -82,6 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
           document.getElementById("services-text").textContent = data.services;
           toggleEditMode(false);
           alert("프로필이 업데이트되었습니다!");
+          location.reload();
         } else {
           alert("업데이트 실패: " + result.error);
         }
@@ -101,35 +199,37 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // 수정 모드 토글 함수
-  function toggleEditMode(editing) {
-    isEditing = editing;
-    hasUnsavedChanges = false; // 모드 전환 시 초기화
+function toggleEditMode(editing) {
+  isEditing = editing;
+  hasUnsavedChanges = false;
 
-    const textElems = document.querySelectorAll("span[id$='-text']");
-    const inputElems = document.querySelectorAll("input[id$='-input'], textarea[id$='-input']");
+  const textElems = document.querySelectorAll("div[id$='-text'], span[id$='-text']");
+  const inputElems = document.querySelectorAll("input[id$='-input'], textarea[id$='-input']");
 
-    textElems.forEach((el) => {
-      el.style.display = editing ? "none" : "inline";
-    });
-    inputElems.forEach((el) => {
-      el.style.display = editing ? "inline" : "none";
-    });
+  textElems.forEach((el) => {
+    el.style.display = editing ? "none" : (el.tagName === "DIV" ? "block" : "inline");
+  });
 
-    editBtn.style.display = editing ? "none" : "inline-block";
-    saveBtn.style.display = editing ? "inline-block" : "none";
+  inputElems.forEach((el) => {
+    el.style.display = editing ? "block" : "none";
+  });
 
-    if (editing) {
-      profileImg.classList.add("editing");
-      profileImg.style.cursor = "pointer";
-      // 수정 모드 진입 시 경고 활성화
-      hasUnsavedChanges = true;
-    } else {
-      profileImg.classList.remove("editing");
-      profileImg.style.cursor = "default";
-      profileInput.value = "";
-      hasUnsavedChanges = false;
-    }
+  editBtn.style.display = editing ? "none" : "inline-block";
+  saveBtn.style.display = editing ? "inline-block" : "none";
+
+  if (editing) {
+    profileImg.classList.add("editing");
+    profileImg.style.cursor = "pointer";
+    hasUnsavedChanges = true;
+  } else {
+    profileImg.classList.remove("editing");
+    profileImg.style.cursor = "default";
+    profileInput.value = "";
+    hasUnsavedChanges = false;
   }
+}
+
+
 
   // CSRF 토큰 가져오는 함수 (Django용)
   function getCookie(name) {

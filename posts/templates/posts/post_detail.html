@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <title>{{ post.title }}</title>
   <link rel="stylesheet" href="{% static 'posts/detail.css' %}" />
+  <link rel="stylesheet" href="{% static 'main/global.css' %}" />
 </head>
 <body>
   <!-- 상단 고정 네비게이션 -->
@@ -19,15 +20,15 @@
     <!-- 작성자 정보 -->
     <div class="author-info">
       {% if post.author.profile_image %}
-        <a href="{% url 'mypage:view_profile' post.author.id %}">
+        <a href="{% url 'mypage:view_profile' post.author.nickname %}">
           <img src="{{ post.author.profile_image.url }}" alt="작성자 프로필" class="profile-img-small" />
         </a>
       {% else %}
-        <a href="{% url 'mypage:view_profile' post.author.id %}">
+        <a href="{% url 'mypage:view_profile' post.author.nickname %}">
           <img src="{% static 'images/default_profile.png' %}" alt="기본 프로필" class="profile-img-small" />
         </a>
       {% endif %}
-      <a href="{% url 'mypage:view_profile' post.author.id %}">
+      <a href="{% url 'mypage:view_profile' post.author.nickname %}">
         <strong>{{ post.author.nickname }}</strong>
       </a>
       <span class="date">{{ post.created_at|date:"Y-m-d H:i" }}</span>
@@ -35,6 +36,9 @@
 
     {% if post.category %}
       <p><strong>카테고리:</strong> {{ post.get_category_display }}</p>
+    {% endif %}
+    {% if post.address %}
+      <p><strong>위치:</strong> {{ post.address }}</p>
     {% endif %}
 
     {% if post.image %}
@@ -44,6 +48,35 @@
     <hr />
 
     <p>{{ post.content|linebreaks }}</p>
+
+    {% if post.post_type == 'donation' %}
+      <div class="participants">
+        <strong>참여자:</strong>
+        {% for p in post.participations.all %}
+          {% if p.user.profile_image %}
+            <img src="{{ p.user.profile_image.url }}" alt="참여자" class="profile-img-small" />
+          {% else %}
+            <img src="{% static 'images/default_profile.png' %}" alt="기본 프로필" class="profile-img-small" />
+          {% endif %}
+        {% empty %}
+          <span>아직 참여자가 없습니다.</span>
+        {% endfor %}
+      </div>
+      {% if user.is_authenticated %}
+        {% if not is_author %}
+          {% if not participated %}
+            <a href="{% url 'participate' post.id %}">참여</a>
+          {% elif post.activity_started and not participation_complete %}
+            <a href="{% url 'complete_participation' post.id %}">참여완료</a>
+          {% endif %}
+        {% else %}
+          {% if can_start_activity %}
+            <a href="{% url 'start_activity' post.id %}">활동 시작</a>
+          {% endif %}
+        {% endif %}
+      {% endif %}
+    {% endif %}
+
 
     {% if user == post.author %}
       <div class="post-actions">
@@ -72,15 +105,15 @@
         <li>
           <div class="author-info">
             {% if comment.author.profile_image %}
-              <a href="{% url 'mypage:view_profile' comment.author.id %}">
+              <a href="{% url 'mypage:view_profile' comment.author.nickname %}">
                 <img src="{{ comment.author.profile_image.url }}" alt="작성자 프로필" class="profile-img-small" />
               </a>
             {% else %}
-              <a href="{% url 'mypage:view_profile' comment.author.id %}">
+              <a href="{% url 'mypage:view_profile' comment.author.nickname %}">
                 <img src="{% static 'images/default_profile.png' %}" alt="기본 프로필" class="profile-img-small" />
               </a>
             {% endif %}
-            <a href="{% url 'mypage:view_profile' comment.author.id %}">
+            <a href="{% url 'mypage:view_profile' comment.author.nickname %}">
               <strong>{{ comment.author.nickname }}</strong>
             </a>
             <span class="date">{{ comment.created_at|date:"Y-m-d H:i" }}</span>

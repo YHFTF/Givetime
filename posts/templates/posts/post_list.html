@@ -13,6 +13,7 @@
   </title>
 
   <link rel="stylesheet" href="{% static 'posts/board.css' %}" />
+  <link rel="stylesheet" href="{% static 'main/global.css' %}" />
   <style>
     /* a 태그 기본 파란색과 밑줄 제거 */
     a {
@@ -51,7 +52,7 @@
         <div class="card-meta">
           <div class="author-info">
             {% if post.author.profile_image %}
-              <a href="{% url 'mypage:view_profile' post.author.id %}">
+              <a href="{% url 'mypage:view_profile' post.author.nickname %}">
                 <img
                   src="{{ post.author.profile_image.url }}"
                   alt="작성자 프로필"
@@ -59,7 +60,7 @@
                 />
               </a>
             {% else %}
-              <a href="{% url 'mypage:view_profile' post.author.id %}">
+              <a href="{% url 'mypage:view_profile' post.author.nickname %}">
                 <img
                   src="{% static 'images/default_profile.png' %}"
                   alt="기본 프로필"
@@ -67,7 +68,7 @@
                 />
               </a>
             {% endif %}
-            <a href="{% url 'mypage:view_profile' post.author.id %}">
+            <a href="{% url 'mypage:view_profile' post.author.nickname %}">
               <span class="author">{{ post.author.nickname }}</span>
             </a>
           </div>
@@ -117,7 +118,7 @@
         <div class="sidebar-card-meta">
           <div class="author-info">
             {% if post.author.profile_image %}
-              <a href="{% url 'mypage:view_profile' post.author.id %}">
+              <a href="{% url 'mypage:view_profile' post.author.nickname %}">
                 <img
                   src="{{ post.author.profile_image.url }}"
                   alt="작성자 프로필"
@@ -125,7 +126,7 @@
                 />
               </a>
             {% else %}
-              <a href="{% url 'mypage:view_profile' post.author.id %}">
+              <a href="{% url 'mypage:view_profile' post.author.nickname %}">
                 <img
                   src="{% static 'images/default_profile.png' %}"
                   alt="기본 프로필"
@@ -133,7 +134,7 @@
                 />
               </a>
             {% endif %}
-            <a href="{% url 'mypage:view_profile' post.author.id %}">
+            <a href="{% url 'mypage:view_profile' post.author.nickname %}">
               <span class="author">{{ post.author.nickname }}</span>
             </a>
           </div>

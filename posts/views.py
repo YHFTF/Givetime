@@ -72,6 +72,7 @@ def post_create(request, post_type):
         title = request.POST.get('title')
         content = request.POST.get('content')
         category = request.POST.get('category') if post_type in ['donation', 'request'] else None
+        address = request.POST.get('address')
 
         Post.objects.create(
             title=title,
@@ -80,6 +81,7 @@ def post_create(request, post_type):
             category=category,
             author=request.user,
             image=request.FILES.get('image'),
+            address=address,
             is_fixed=bool(request.POST.get('is_fixed')),
         )
         return redirect(reverse('post_list', args=[post_type]))
@@ -104,6 +106,7 @@ def post_update(request, post_type, post_id):
     if request.method == 'POST':
         post.title = request.POST.get('title')
         post.content = request.POST.get('content')
+        post.address = request.POST.get('address')
 
         if post_type in ['donation', 'request']:
             post.category = request.POST.get('category')

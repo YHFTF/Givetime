@@ -30,6 +30,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     skills = models.TextField(blank=True, null=True)  # 기술 목록
     services = models.TextField(blank=True, null=True)  # 서비스 목록
 
+    exp = models.PositiveIntegerField(default=0)
+
     last_message_read_time = models.DateTimeField(null=True, blank=True)
 
     # 관리자가 공지사항을 작성할 수 있는지 여부
@@ -48,3 +50,21 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def get_skills_list(self):
         return self.skills.split(',') if self.skills else []
+
+    @property
+    def rank(self):
+        if self.exp < 100:
+            return '하수'
+        elif self.exp < 500:
+            return '중수'
+        else:
+            return '고수'
+
+    @property
+    def rank_level(self):
+        if self.exp < 100:
+            return 1
+        elif self.exp < 500:
+            return 2
+        else:
+            return 3

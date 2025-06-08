@@ -37,8 +37,12 @@ python manage.py runserver
 daphne -p 8001 Givetime.asgi:application
 ```
 
-> 실시간 채팅 등 **웹소켓 기능**은 `daphne` 서버를 통해 처리됩니다.  
+> 실시간 채팅 등 **웹소켓 기능**은 `daphne` 서버를 통해 처리됩니다.
 > 프론트엔드에서는 `ws://localhost:8001/...` 주소로 연결됩니다.
+
+### 5. 채팅 기능 사용 팁
+
+- 채팅 목록 화면에서 닉네임을 검색해 원하는 사용자와 대화를 시작할 수 있습니다.
 
 ---
 
@@ -51,3 +55,8 @@ daphne -p 8001 Givetime.asgi:application
 ```bash
 python manage.py createsuperuser
 ```
+
+### 구글 지도 API 키 설정
+
+게시글 작성 화면에서는 구글 맵 API를 사용합니다. `post_form.html`의 스크립트 URL 중
+`YOUR_GOOGLE_MAPS_API_KEY` 부분에 발급받은 API 키를 입력해 주세요.

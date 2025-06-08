@@ -1,0 +1,18 @@
+/* Chat styles */
+.chat-list { max-width: 600px; margin: 40px auto; }
+.chat-item { padding: 10px; border-bottom: 1px solid #ddd; }
+.chat-item a { text-decoration: none; color: inherit; display: block; }
+
+.search-bar { display: flex; margin-bottom: 20px; }
+.search-bar input { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px 0 0 4px; }
+.search-bar button { padding: 8px 16px; background-color: #4caf50; color: white; border: none; border-radius: 0 4px 4px 0; cursor: pointer; }
+.search-results { margin-bottom: 20px; }
+
+.chat-container { max-width: 600px; margin: 20px auto; }
+#chat-log { border: 1px solid #ccc; height: 300px; overflow-y: scroll; padding: 10px; display: flex; flex-direction: column; }
+.bubble { max-width: 70%; padding: 8px 12px; margin: 4px 0; border-radius: 12px; position: relative; }
+.me { align-self: flex-end; background: #dcf8c6; }
+.other { align-self: flex-start; background: #fff; border: 1px solid #ccc; }
+.timestamp { font-size: 0.75em; color: #666; display: block; margin-top: 2px; text-align: right; }
+.input-row { margin-top: 10px; display: flex; gap: 5px; }
+.input-row input[type="text"] { flex: 1; }

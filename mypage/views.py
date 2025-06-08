@@ -19,6 +19,8 @@ def my_page(request):
         'profile_image': user.profile_image.url if user.profile_image else None,
         'is_owner': True,
         'isAdmin': user.isAdmin,
+        'rank': user.rank,
+        'rank_level': user.rank_level,
     }
     return render(request, 'mypage/mypage.html', context)
 
@@ -36,6 +38,8 @@ def view_profile(request, nickname):
         'profile_image': user_obj.profile_image.url if user_obj.profile_image else None,
         'is_owner': (request.user.id == user_obj.id),
         'isAdmin': user_obj.isAdmin,
+        'rank': user_obj.rank,
+        'rank_level': user_obj.rank_level,
     }
     return render(request, 'mypage/mypage.html', context)
 
@@ -58,7 +62,9 @@ def search_user(request):
                 'services': request.user.services or '서비스를 입력해주세요!',
                 'profile_image': request.user.profile_image.url if request.user.profile_image else None,
                 'is_owner': True,
-                'error': '존재하지 않는 사용자입니다.'
+                'error': '존재하지 않는 사용자입니다.',
+                'rank': request.user.rank,
+                'rank_level': request.user.rank_level,
             })
     return redirect('mypage:my_page')
 

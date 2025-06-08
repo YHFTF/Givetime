@@ -6,7 +6,8 @@
     <title>마이페이지 | Give Time</title>
     <link rel="stylesheet" href="{% static 'mypage/mypage.css' %}" />
   </head>
-  <body>
+  <body data-rank-level="{{ rank_level }}">
+    <div id="petal-container"></div>
     <div id="header">{% include 'main/header.html' %}</div>
 
     <input type="file" id="profile-image-input" accept="image/*" />
@@ -38,6 +39,7 @@
           <h2>
             {% if is_owner %}
             <span id="nickname-text">{{ nickname }}</span>
+            <span class="rank-badge rank-{{ rank_level }}">{{ rank }}</span>
             <input
               type="text"
               id="nickname-input"
@@ -47,6 +49,7 @@
             />
             {% else %}
             <span>{{ nickname }}</span>
+            <span class="rank-badge rank-{{ rank_level }}">{{ rank }}</span>
             {% endif %}
           </h2>
 

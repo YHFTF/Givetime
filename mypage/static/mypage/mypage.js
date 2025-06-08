@@ -7,6 +7,29 @@ document.addEventListener("DOMContentLoaded", () => {
   let isEditing = false;
   let hasUnsavedChanges = false;
 
+  const rankLevel = parseInt(document.body.dataset.rankLevel || "1");
+  const petalContainer = document.getElementById("petal-container");
+
+  function createPetal() {
+    const petal = document.createElement("div");
+    petal.className = "petal";
+    petal.style.left = Math.random() * 100 + "vw";
+    const duration = 5 + Math.random() * 5;
+    petal.style.animationDuration = duration + "s";
+    petalContainer.appendChild(petal);
+    setTimeout(() => petal.remove(), duration * 1000);
+  }
+
+  let initial = 0;
+  if (rankLevel === 2) initial = 15;
+  else if (rankLevel === 3) initial = 30;
+  for (let i = 0; i < initial; i++) {
+    createPetal();
+  }
+  if (rankLevel > 1) {
+    setInterval(createPetal, 1000);
+  }
+
   // 프로필 이미지 클릭: 수정 모드일 때만 파일 선택창 열기
   profileImg.addEventListener("click", () => {
     if (!isEditing) return;

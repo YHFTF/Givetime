@@ -4,6 +4,9 @@ from . import views
 urlpatterns = [
     # 게시판 목록 (post_list) - 4개 게시판 공통
     path('<str:post_type>/', views.post_list, name='post_list'),
+    path('donation/<int:post_id>/participate/', views.participate, name='participate'),
+    path('donation/<int:post_id>/start/', views.start_activity, name='start_activity'),
+    path('donation/<int:post_id>/complete/', views.complete_participation, name='complete_participation'),
 
     # 게시글 상세 (post_detail) - 4개 게시판 공통
     path('<str:post_type>/<int:post_id>/', views.post_detail, name='post_detail'),

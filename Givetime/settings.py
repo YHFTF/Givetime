@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'mypage',
     'account',
     'chat',
+    'notifications',
 ]
 
 
@@ -70,6 +71,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'chat.context_processors.unread_message_indicator',
+                'notifications.context_processors.unread_notifications',
             ],
         },
     },

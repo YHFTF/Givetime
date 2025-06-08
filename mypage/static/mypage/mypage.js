@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const editBtn = document.getElementById("edit-btn");
   const saveBtn = document.getElementById("save-btn");
+  const adminBtn = document.getElementById("admin-btn");
   const profileImg = document.getElementById("profile-img");
   const profileInput = document.getElementById("profile-image-input");
   let isEditing = false;
@@ -29,6 +30,30 @@ document.addEventListener("DOMContentLoaded", () => {
   editBtn.addEventListener("click", () => {
     toggleEditMode(true);
   });
+
+  if (adminBtn) {
+    adminBtn.addEventListener("click", () => {
+      const pwd = prompt("관리자 비밀번호를 입력하세요:");
+      if (pwd === null) return;
+      const formData = new FormData();
+      formData.append("password", pwd);
+      fetch(`/mypage/register-admin/`, {
+        method: "POST",
+        headers: { "X-CSRFToken": getCookie("csrftoken") },
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((result) => {
+          if (result.success) {
+            alert("관리자로 등록되었습니다.");
+            location.reload();
+          } else {
+            alert(result.error || "등록 실패");
+          }
+        })
+        .catch((err) => console.error("관리자 등록 오류:", err));
+    });
+  }
 
   // 필드 변경 시 unsaved flag 설정
   const inputs = document.querySelectorAll("input[id$='-input'], textarea[id$='-input']");

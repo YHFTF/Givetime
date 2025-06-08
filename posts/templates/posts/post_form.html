@@ -37,6 +37,10 @@
   </select><br><br>
   {% endif %}
 
+  <label for="address">위치:</label><br />
+  <input type="text" id="address" name="address" value="{{ post.address|default_if_none:'' }}" readonly>
+  <div id="map" style="height:300px;margin-top:10px;"></div><br />
+
   <label for="image">새 이미지 업로드:</label>
   <input type="file" id="image" name="image"><br><br>
   {% if post.image %}
@@ -56,5 +60,7 @@
   <div id="footer">{% include 'main/footer.html' %}</div>
 </form>
     </div>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places"></script>
+    <script src="{% static 'posts/map.js' %}"></script>
 </body>
 </html>

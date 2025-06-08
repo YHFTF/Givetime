@@ -25,6 +25,8 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     views = models.PositiveIntegerField(default=0)
     image = models.ImageField(upload_to='post_images/', null=True, blank=True)
+    # 사용자가 선택한 위치 정보 (시/동 단위)
+    address = models.CharField(max_length=100, blank=True, null=True)
 
     # 공지사항에서 상단 고정 여부
     is_fixed = models.BooleanField(default=False)

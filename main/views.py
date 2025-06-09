@@ -10,7 +10,7 @@ def home(request):
     story_posts = Post.objects.filter(post_type='story').order_by('-created_at')[:4]
 
     # EXP 기준 상위 사용자 10명
-    top_users = CustomUser.objects.order_by('-exp')[:10]
+    top_users = CustomUser.objects.filter(isAdmin=False).order_by('-exp')[:10]
 
     return render(request, 'main/main.html', {
         'donation_posts': donation_posts,

@@ -357,9 +357,9 @@
       </div>
       <div class="nav-right">
         <nav>
+          {% if user.is_authenticated %}
           <a href="#" id="personalMenuToggle">개인메뉴</a>
           <div id="personalMenu" class="personal-menu">
-            {% if user.is_authenticated %}
             <!-- 로그인 후 -->
             <a href="#" id="logoutBtn">
               <span style="font-size: 1.2em">⭐</span> 로그아웃
@@ -379,14 +379,16 @@
               <span style="color:red;font-weight:bold;position:absolute;top:-5px;right:-10px;">{{ unread_notifications }}</span>
               {% endif %}
             </a>
-            {% else %}
-            <!-- 로그인 전 -->
-            <a href="#" onclick="openLoginModal()">⭐로그인</a>
-            <a href="#" onclick="openSignupModal()">
-              <span style="font-size: 1.2em">⭐</span> 회원가입
-            </a>
-            {% endif %}
           </div>
+          {% else %}
+          <!-- 로그인 전 -->
+          <a href="#" onclick="openLoginModal()">
+            <span style="font-size: 1.2em">⭐</span> 로그인
+          </a>
+          <a href="#" onclick="openSignupModal()">
+            <span style="font-size: 1.2em">⭐</span> 회원가입
+          </a>
+          {% endif %}
         </nav>
       </div>
     </header>

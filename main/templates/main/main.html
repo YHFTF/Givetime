@@ -58,7 +58,13 @@
         <div class="card">
           <div class="card-top">
             <div class="category-info">
-              <div class="category-name">{{ post.category }}</div>
+              <div class="category-name">
+                {% if post.category == 'education' %}교육
+                {% elif post.category == 'it' %}IT/개발
+                {% elif post.category == 'design' %}디자인
+                {% elif post.category == 'etc' %}기타
+                {% endif %}
+              </div>
               <div class="category-location">{{ post.author.username }}</div>
             </div>
           </div>
@@ -67,7 +73,7 @@
 
             <div class="card-bottom">
               <span class="date"
-                >작성일: {{ post.created_at|date:"Y-m-d H:i" }}</span
+                >작성일: {{ post.created_at|date:"Y-m-d " }}</span
               >
               <a href="/posts/donation/{{ post.id }}/" class="detail-link"
                 >상세보기</a
@@ -101,7 +107,7 @@
             <div class="title">{{ post.title }}</div>
             <div class="card-bottom">
               <span class="date"
-                >작성일: {{ post.created_at|date:"Y-m-d H:i" }}</span
+                >작성일: {{ post.created_at|date:"Y-m-d" }}</span
               >
               <a href="/posts/donation/{{ post.id }}/" class="detail-link"
                 >상세보기</a

@@ -6,6 +6,8 @@ from django.urls import reverse
 
 from .models import Post, Comment, Participation
 from notifications.models import Notification
+from django.conf import settings
+from django.shortcuts import render
 
 VALID_POST_TYPES = ['donation', 'request', 'story', 'announcement']
 
@@ -113,7 +115,10 @@ def post_create(request, post_type):
         )
         return redirect(reverse('post_list', args=[post_type]))
 
-    return render(request, 'posts/post_form.html', {'post_type': post_type})
+    return render(request, 'posts/post_form.html', {
+        'post_type': post_type, 
+        'google_api_key': settings.GOOGLE_MAPS_API_KEY
+        })
 
 # 게시글 수정
 @login_required

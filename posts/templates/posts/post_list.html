@@ -70,6 +70,7 @@
             {% endif %}
             <a href="{% url 'mypage:view_profile' post.author.nickname %}">
               <span class="author">{{ post.author.nickname }}</span>
+              <span class="rank-badge rank-{{ post.author.rank_level }}">{{ post.author.rank }}</span>
             </a>
           </div>
           <span class="date">{{ post.created_at|date:"Y-m-d" }}</span>
@@ -137,6 +138,7 @@
             {% endif %}
             <a href="{% url 'mypage:view_profile' post.author.nickname %}">
               <span class="author">{{ post.author.nickname }}</span>
+              <span class="rank-badge rank-{{ post.author.rank_level }}">{{ post.author.rank }}</span>
             </a>
           </div>
           <span class="date">{{ post.created_at|date:"Y-m-d" }}</span>

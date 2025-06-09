@@ -1,4 +1,4 @@
-{% load static %}
+{% load static markdown_extras %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -48,7 +48,7 @@
 
     <hr />
 
-    <p>{{ post.content|linebreaks }}</p>
+    <p>{{ post.content|markdownify|safe }}</p>
 
     {% if post.post_type == 'donation' %}
       <div class="participants">
@@ -120,7 +120,7 @@
             </a>
             <span class="date">{{ comment.created_at|date:"Y-m-d H:i" }}</span>
           </div>
-          <p>{{ comment.content }}</p>
+          <p>{{ comment.content|markdownify|safe }}</p>
           {% if user == comment.author %}
             <form action="{% url 'delete_comment' post.post_type post.id comment.id %}" method="post" style="display: inline">
               {% csrf_token %}

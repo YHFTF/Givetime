@@ -114,6 +114,24 @@
         {% endfor %}
       </div>
     </section>
+
+    <section class="rank-section">
+      <h2 class="section-title">사용자 EXP 랭킹</h2>
+      <ul class="rank-list">
+        {% for user in top_users %}
+        <li class="rank-item">
+          <span>
+            {% if forloop.counter == 1 %}🥇{% elif forloop.counter == 2 %}🥈{% elif forloop.counter == 3 %}🥉{% else %}{{ forloop.counter }}.{% endif %}
+            {{ user.nickname }}
+            <span class="rank-badge rank-{{ user.rank_level }}">{{ user.rank }}</span>
+          </span>
+          <span>{{ user.exp }} EXP</span>
+        </li>
+        {% empty %}
+        <li>랭킹 정보가 없습니다.</li>
+        {% endfor %}
+      </ul>
+    </section>
     {% include 'main/footer.html' %}
     <div id="popupMessage" class="popup-message" style="display: none"></div>
     <!-- 팝업 메시지 -->

@@ -243,6 +243,15 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
   }
+  const personalMenuToggle = document.getElementById("personalMenuToggle");
+  const personalMenu = document.getElementById("personalMenu");
+  if (personalMenuToggle && personalMenu) {
+    personalMenuToggle.addEventListener("click", function (e) {
+      e.preventDefault();
+      personalMenu.classList.toggle("open");
+    });
+  }
+
   const logoutBtn = document.getElementById("logoutBtn");
   if (!logoutBtn) return;
 

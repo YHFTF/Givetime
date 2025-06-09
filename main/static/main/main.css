@@ -263,3 +263,30 @@ section {
   font-size: 11px;
   margin-top: 2px;
 }
+
+/* 랭킹 섹션 스타일 */
+.rank-section {
+  max-width: 600px;
+  margin: 40px auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.rank-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.rank-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.rank-item:last-child {
+  border-bottom: none;
+}

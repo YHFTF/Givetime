@@ -34,6 +34,41 @@
         flex: 1;
       }
 
+      .nav-right nav {
+        position: relative;
+      }
+
+      .personal-menu {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+        pointer-events: none;  /* 클릭 불가 상태 */
+        transition: max-height 0.3s ease, opacity 0.3s ease;
+        z-index: 1000;
+        width: 150px;
+        box-shadow: 0 0 0 transparent; /* 그림자도 안 보이게 */
+      }
+
+      .personal-menu a {
+        margin: 10px;
+      }
+
+      .personal-menu.open {
+        max-height: 500px;
+        opacity: 1;
+        pointer-events: auto;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* 열렸을 때만 그림자 표시 */
+      }
+
+
       nav a {
         margin: 0 10px;
         text-decoration: none;
@@ -322,31 +357,36 @@
       </div>
       <div class="nav-right">
         <nav>
-          {% if user.is_authenticated %}
-          <!-- 로그인 후 -->
-          <a href="#" id="logoutBtn">⭐로그아웃</a>
-          <a href="{% url 'mypage:my_page' %}">
-            <span style="font-size: 1.2em">⭐</span> 마이페이지
-          </a>
-          <a href="{% url 'chat:chat_list' %}" style="position: relative; display:inline-block;">
-            <span style="font-size: 1.2em">💬</span> 채팅
-            {% if has_unread_messages %}
-            <span style="color:red;font-weight:bold;position:absolute;top:-5px;right:-10px;">!</span>
+          <a href="#" id="personalMenuToggle">개인메뉴</a>
+          <div id="personalMenu" class="personal-menu">
+            {% if user.is_authenticated %}
+            <!-- 로그인 후 -->
+            <a href="#" id="logoutBtn">
+              <span style="font-size: 1.2em">⭐</span> 로그아웃
+            </a>
+            <a href="{% url 'mypage:my_page' %}">
+              <span style="font-size: 1.2em">⭐</span> 마이페이지
+            </a>
+            <a href="{% url 'chat:chat_list' %}" style="position: relative; display:inline-block;">
+              <span style="font-size: 1.2em">💬</span> 채팅
+              {% if has_unread_messages %}
+              <span style="color:red;font-weight:bold;position:absolute;top:-5px;right:-10px;">!</span>
+              {% endif %}
+            </a>
+            <a href="{% url 'notifications:list' %}" style="position: relative; display:inline-block;">
+              <span style="font-size: 1.2em">🔔</span> 알림
+              {% if unread_notifications %}
+              <span style="color:red;font-weight:bold;position:absolute;top:-5px;right:-10px;">{{ unread_notifications }}</span>
+              {% endif %}
+            </a>
+            {% else %}
+            <!-- 로그인 전 -->
+            <a href="#" onclick="openLoginModal()">⭐로그인</a>
+            <a href="#" onclick="openSignupModal()">
+              <span style="font-size: 1.2em">⭐</span> 회원가입
+            </a>
             {% endif %}
-          </a>
-          <a href="{% url 'notifications:list' %}" style="position: relative; display:inline-block;">
-            <span style="font-size: 1.2em">🔔</span> 알림
-            {% if unread_notifications %}
-            <span style="color:red;font-weight:bold;position:absolute;top:-5px;right:-10px;">{{ unread_notifications }}</span>
-            {% endif %}
-          </a>
-          {% else %}
-          <!-- 로그인 전 -->
-          <a href="#" onclick="openLoginModal()">⭐로그인</a>
-          <a href="#" onclick="openSignupModal()">
-            <span style="font-size: 1.2em">⭐</span> 회원가입
-          </a>
-          {% endif %}
+          </div>
         </nav>
       </div>
     </header>

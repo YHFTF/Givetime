@@ -10,3 +10,25 @@ input[type="text"], input[type="email"], input[type="password"], input[type="num
   border-radius: 4px;
   box-sizing: border-box;
 }
+
+/* 사용자 등급 뱃지 공통 스타일 */
+.rank-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  margin-left: 6px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  color: #fff;
+}
+
+.rank-1 {
+  background-color: #95a5a6;
+}
+
+.rank-2 {
+  background-color: #3498db;
+}
+
+.rank-3 {
+  background-color: #e67e22;
+}

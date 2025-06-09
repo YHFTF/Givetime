@@ -58,9 +58,9 @@ python manage.py createsuperuser
 
 ### 구글 지도 API 키 설정
 
-게시글 작성 화면에서는 구글 맵 API를 사용합니다. `post_form.html`의 스크립트 URL 중
-`YOUR_GOOGLE_MAPS_API_KEY` 부분에 발급받은 API 키를 입력해 주세요.
-
+게시글 작성 화면에서는 구글 맵 API를 사용합니다. 
+.env 에 GOOGLE_MAPS_API_KEY=API키
+를 넣어주세요.
 ---
 
 ### EXP 포인트 시스템

@@ -80,7 +80,8 @@
       <p>등록된 게시글이 없습니다.</p>
       {% endfor %}
 
-      {% if post_type != 'announcement' or user.is_authenticated and user.is_staff or user.is_superuser %}
+      {% if post_type != 'announcement' or user.is_authenticated and user.is_superuser or user.is_authenticated and user.isAdmin %}
+  
         <a href="{% url 'post_create' post_type %}" class="create-btn">글 작성</a>
       {% endif %}
 

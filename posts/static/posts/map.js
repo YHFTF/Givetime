@@ -1,5 +1,5 @@
 function initMap() {
-    const defaultCenter = { lat: 37.5665, lng: 126.9780 }; // Seoul
+    const defaultCenter = { lat: 36.632473380701, lng: 127.45314301376 }; // 충북대학교
     const map = new google.maps.Map(document.getElementById('map'), {
         zoom: 12,
         center: defaultCenter,
